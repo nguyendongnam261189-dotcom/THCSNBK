@@ -26,35 +26,124 @@ Thông tin về trường THCS Nguyễn Bỉnh Khiêm:
 export const PROJECTS: Project[] = [
     {
         id: '1',
-        title: 'Hệ thống tưới cây tự động IoT',
-        category: 'IoT',
-        description: 'Mô hình sử dụng cảm biến độ ẩm đất và ESP8266 để tự động tưới nước và gửi thông báo về điện thoại.',
+        title: 'Bản đồ Việt Nam thông minh - Smartmap 34',
+        category: 'Environment',
+        description: 'Mô hình bản đồ tương tác giúp tìm hiểu địa lý và môi trường Việt Nam.',
         imageUrl: 'https://picsum.photos/600/400?random=1',
-        authors: 'Nhóm Tin học K9'
+        authors: 'Nguyễn Thị Diệu Hiền, Phan Thị Ngọc Lý',
+        videoUrl: './intro.mp4'
     },
     {
         id: '2',
-        title: 'Robot vận chuyển hàng hóa',
-        category: 'Robotics',
-        description: 'Robot dò line và tránh vật cản, được lập trình để tham gia cuộc thi Đấu trường Robotic.',
+        title: 'Renewable Energy Usage Model',
+        category: 'Environment',
+        description: 'Mô hình năng lượng tái tạo tích hợp AI, tối ưu hóa việc sử dụng năng lượng sạch.',
         imageUrl: 'https://picsum.photos/600/400?random=2',
-        authors: 'CLB Robotics'
+        authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
+        videoUrl: './intro.mp4'
     },
     {
         id: '3',
-        title: 'Mô hình Tế bào Động vật 3D',
-        category: 'STEM',
-        description: 'Mô hình học cụ trực quan làm từ vật liệu tái chế, hỗ trợ môn Sinh học.',
+        title: 'Hệ thống giám sát môi trường IoT & Chatbot',
+        category: 'IT',
+        description: 'Hệ thống giám sát và điều khiển chất lượng môi trường, phòng chống cháy nổ sử dụng IOT và CHATBOT.',
         imageUrl: 'https://picsum.photos/600/400?random=3',
-        authors: 'Tổ Sinh - Hóa'
+        authors: 'Nguyễn Thị Thu Lợi',
+        videoUrl: './intro.mp4',
+        demoUrl: 'https://example.com/demo-iot'
     },
     {
         id: '4',
-        title: 'Phần mềm Quản lý Thư viện số',
-        category: 'Software',
-        description: 'Ứng dụng web giúp tra cứu sách và quản lý mượn trả, tích hợp mã QR.',
+        title: 'Dự án: “Đà Nẵng, kế thừa và phát triển”',
+        category: 'Technology',
+        description: 'Mô hình thể hiện sự phát triển đô thị bền vững của Đà Nẵng.',
         imageUrl: 'https://picsum.photos/600/400?random=4',
-        authors: 'Nguyễn Văn A - 9/2'
+        authors: 'Nguyễn Thị Hoài Thi, Trần Nguyễn Huyền Trang',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '5',
+        title: 'Nấm Bào Ngư tái sinh',
+        category: 'Environment',
+        description: 'Mô hình nuôi trồng nấm bào ngư tận dụng phế phẩm nông nghiệp, bảo vệ môi trường.',
+        imageUrl: 'https://picsum.photos/600/400?random=5',
+        authors: 'Nguyễn Thị Yến, Lê Thị Nết',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '6',
+        title: 'Vườn thông minh',
+        category: 'Technology',
+        description: 'Hệ thống chăm sóc cây tự động sử dụng công nghệ cảm biến.',
+        imageUrl: 'https://picsum.photos/600/400?random=6',
+        authors: 'Hoàng Thị Sương',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '7',
+        title: 'Hộp bút thông minh',
+        category: 'Technology',
+        description: 'Hộp bút tích hợp các tính năng công nghệ hỗ trợ học tập.',
+        imageUrl: 'https://picsum.photos/600/400?random=7',
+        authors: 'Hoàng Thị Sương',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '8',
+        title: 'Mô hình cảnh báo lũ và sạt lỡ đất',
+        category: 'Technology',
+        description: 'Hệ thống cảnh báo sớm thiên tai giúp giảm thiểu thiệt hại.',
+        imageUrl: 'https://picsum.photos/600/400?random=8',
+        authors: 'Nguyễn Thị A Kim, Lê Thị Thanh Thương',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '9',
+        title: 'Testing Smart Board',
+        category: 'IT',
+        description: 'Bảng trắc nghiệm Tiếng Anh thông minh tích hợp AI.',
+        imageUrl: 'https://picsum.photos/600/400?random=9',
+        authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
+        videoUrl: './intro.mp4',
+        demoUrl: 'https://example.com/smart-board'
+    },
+    {
+        id: '10',
+        title: 'Website thư viện học liệu số',
+        category: 'IT',
+        description: 'Website thư viện học liệu số và tương tác liên môn.',
+        imageUrl: 'https://picsum.photos/600/400?random=10',
+        authors: 'Huỳnh Quốc Khánh',
+        videoUrl: './intro.mp4',
+        demoUrl: 'https://example.com/library'
+    },
+    {
+        id: '11',
+        title: 'VISION CONTROL',
+        category: 'IT',
+        description: 'Ứng dụng xử lý hình ảnh và máy chiếu để chuyển bảng thường thành bảng tương tác thông minh.',
+        imageUrl: 'https://picsum.photos/600/400?random=11',
+        authors: 'Trịnh Hoàng Sơn',
+        videoUrl: './intro.mp4',
+        demoUrl: 'https://example.com/vision-control'
+    },
+    {
+        id: '12',
+        title: 'Công viên Toán học',
+        category: 'Math',
+        description: 'Mô hình công viên tích hợp các kiến thức toán học trực quan.',
+        imageUrl: 'https://picsum.photos/600/400?random=12',
+        authors: 'Nguyễn Thị Vân',
+        videoUrl: './intro.mp4'
+    },
+    {
+        id: '13',
+        title: 'SpiralArt - Nghệ thuật từ chuyển động',
+        category: 'Math',
+        description: 'Vẽ hoa văn toán học Spirograph – Nghệ thuật từ chuyển động đều.',
+        imageUrl: 'https://picsum.photos/600/400?random=13',
+        authors: 'Trần Thiên Ân, Nguyễn Đức Khôi',
+        videoUrl: './intro.mp4'
     }
 ];
 
