@@ -5,7 +5,7 @@ import Background from './components/Background';
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
 import { generateResponse } from './services/geminiService';
-import { Mic, Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, Play, ExternalLink, Filter } from 'lucide-react';
+import { Mic, Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, Play, ExternalLink, Filter, Maximize, Minimize } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
@@ -25,6 +25,33 @@ const App: React.FC = () => {
   // Video State
   const [videoError, setVideoError] = useState(false);
   const [projectVideoError, setProjectVideoError] = useState(false);
+
+  // Fullscreen State
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Handle Fullscreen changes (e.g. user presses ESC)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
 
   // Reset video error when entering About view
   useEffect(() => {
@@ -390,6 +417,15 @@ const App: React.FC = () => {
     <div className="relative h-screen w-full font-sans selection:bg-primary/30 text-white overflow-hidden">
       <Background />
       
+      {/* Fullscreen Toggle Button */}
+      <button
+        onClick={toggleFullscreen}
+        className="fixed top-4 right-4 z-[55] p-3 bg-black/40 hover:bg-white/10 backdrop-blur-md rounded-full text-white/50 hover:text-white transition-all border border-white/5 hover:border-white/20"
+        title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+      >
+        {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+      </button>
+
       <main className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth pb-0">
         {currentView === AppView.HOME && renderHome()}
         {currentView === AppView.GALLERY && renderGallery()}
