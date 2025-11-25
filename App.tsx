@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppView, Project } from './types';
 import { SCHOOL_NAME, BOOTH_NUMBER, PROJECTS, SCHEDULE } from './constants';
 import Background from './components/Background';
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
+import VirtualKeyboard from './components/VirtualKeyboard';
 import { generateResponse } from './services/geminiService';
 import { Mic, Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, Play, ExternalLink, Filter, Maximize, Minimize } from 'lucide-react';
 
@@ -21,6 +22,8 @@ const App: React.FC = () => {
       {role: 'model', text: `Chào bạn! Tôi là trợ lý ảo của ${SCHOOL_NAME}. Bạn cần tìm hiểu thông tin gì về gian hàng hay các sản phẩm STEM của chúng tôi?`}
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
   
   // Video State
   const [videoError, setVideoError] = useState(false);
@@ -40,6 +43,11 @@ const App: React.FC = () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
+
+  // Auto-scroll chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -67,12 +75,13 @@ const App: React.FC = () => {
     }
   }, [selectedProject]);
 
-  const handleChatSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
+  const handleChatSubmit = async (e?: React.FormEvent) => {
+      if (e) e.preventDefault();
       if (!input.trim() || isLoading) return;
 
       const userMsg = input;
       setInput('');
+      setShowKeyboard(false); // Hide keyboard on submit
       setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
       setIsLoading(true);
 
@@ -80,6 +89,15 @@ const App: React.FC = () => {
       
       setMessages(prev => [...prev, { role: 'model', text: response }]);
       setIsLoading(false);
+  };
+
+  // Virtual Keyboard Handlers
+  const handleKeyInput = (key: string) => {
+      setInput(prev => prev + key);
+  };
+
+  const handleDeleteInput = () => {
+      setInput(prev => prev.slice(0, -1));
   };
 
   const renderHome = () => (
@@ -298,8 +316,8 @@ const App: React.FC = () => {
             <p className="text-white/50">Hỏi tôi về lịch trình, sản phẩm hoặc thông tin về trường</p>
         </div>
 
-        <div className="flex-1 min-h-0 bg-white/5 border border-white/10 rounded-3xl overflow-hidden flex flex-col backdrop-blur-sm">
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className={`flex-1 min-h-0 bg-white/5 border border-white/10 rounded-3xl overflow-hidden flex flex-col backdrop-blur-sm transition-all duration-300 ${showKeyboard ? 'mb-[280px] md:mb-[300px]' : ''}`}>
+            <div className="flex-1 overflow-y-auto p-6 space-y-4" >
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-4 rounded-2xl ${
@@ -320,13 +338,15 @@ const App: React.FC = () => {
                         </div>
                     </div>
                 )}
+                <div ref={chatEndRef} />
             </div>
             
-            <form onSubmit={handleChatSubmit} className="p-4 bg-white/5 border-t border-white/10 flex gap-3 shrink-0">
+            <form onSubmit={handleChatSubmit} className="p-4 bg-white/5 border-t border-white/10 flex gap-3 shrink-0 relative">
                 <input 
                     type="text" 
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    onFocus={() => setShowKeyboard(true)}
                     placeholder="Nhập câu hỏi của bạn..."
                     className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-primary/50 focus:bg-black/40 transition-all"
                 />
@@ -340,17 +360,29 @@ const App: React.FC = () => {
             </form>
         </div>
         
-        <div className="mt-4 flex flex-wrap justify-center gap-2 shrink-0">
-            {["Lịch thi đấu Robotic khi nào?", "Gian hàng có gì?", "Giới thiệu trường"].map(suggestion => (
-                <button 
-                    key={suggestion} 
-                    onClick={() => { setInput(suggestion); }}
-                    className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors"
-                >
-                    {suggestion}
-                </button>
-            ))}
-        </div>
+        {!showKeyboard && (
+            <div className="mt-4 flex flex-wrap justify-center gap-2 shrink-0">
+                {["Lịch thi đấu Robotic khi nào?", "Danh sách sản phẩm STEM?", "Giới thiệu trường"].map(suggestion => (
+                    <button 
+                        key={suggestion} 
+                        onClick={() => { setInput(suggestion); handleChatSubmit(); }}
+                        className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors"
+                    >
+                        {suggestion}
+                    </button>
+                ))}
+            </div>
+        )}
+        
+        {/* Virtual Keyboard Overlay */}
+        {showKeyboard && (
+            <VirtualKeyboard 
+                onKeyPress={handleKeyInput}
+                onDelete={handleDeleteInput}
+                onSubmit={() => handleChatSubmit()}
+                onClose={() => setShowKeyboard(false)}
+            />
+        )}
     </div>
   );
 
