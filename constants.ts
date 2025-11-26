@@ -25,7 +25,7 @@ Thông tin về trường THCS Nguyễn Bỉnh Khiêm:
 `;
 
 // Local Image for STEM (User uploaded to public/sunflower.png)
-const STEM_COVER_IMAGE = "/sunflower.png";
+const STEM_COVER_IMAGE = "/images/sunflower.png";
 
 // Unsplash Image for AI
 const AI_COVER_IMAGE = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop";
