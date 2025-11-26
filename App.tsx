@@ -5,7 +5,6 @@ import { SCHOOL_NAME, BOOTH_NUMBER, PROJECTS, SCHEDULE } from './constants';
 import Background from './components/Background';
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
-import VirtualKeyboard from './components/VirtualKeyboard';
 import { generateResponse } from './services/geminiService';
 import { Mic, Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, Play, ExternalLink, Filter, Maximize, Minimize, BrainCircuit, Box } from 'lucide-react';
 
@@ -26,11 +25,9 @@ const App: React.FC = () => {
       {role: 'model', text: `Chào bạn! Tôi là trợ lý ảo của ${SCHOOL_NAME}. Bạn cần tìm hiểu thông tin gì về gian hàng hay các sản phẩm STEM của chúng tôi?`}
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showKeyboard, setShowKeyboard] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   // Video State
-  const [videoError, setVideoError] = useState(false);
   const [projectVideoError, setProjectVideoError] = useState(false);
 
   // Fullscreen State
@@ -51,7 +48,7 @@ const App: React.FC = () => {
   // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, showKeyboard]); // Added showKeyboard to scroll when keyboard opens
+  }, [messages]);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -65,12 +62,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Reset video error when entering About view
-  useEffect(() => {
-    if (currentView === AppView.ABOUT) {
-        setVideoError(false);
-    }
-  }, [currentView]);
   
   // Reset project video error when opening a project
   useEffect(() => {
@@ -85,7 +76,6 @@ const App: React.FC = () => {
 
       const userMsg = input;
       setInput('');
-      setShowKeyboard(false); // Hide keyboard on submit
       setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
       setIsLoading(true);
 
@@ -95,13 +85,10 @@ const App: React.FC = () => {
       setIsLoading(false);
   };
 
-  // Virtual Keyboard Handlers
-  const handleKeyInput = (key: string) => {
-      setInput(prev => prev + key);
-  };
-
-  const handleDeleteInput = () => {
-      setInput(prev => prev.slice(0, -1));
+  const handleExperienceClick = (url: string) => {
+    // Attempt to open everything in iframe first (keep user in app)
+    // We add a fallback button in the iframe overlay header if it fails to load
+    setIframeUrl(url);
   };
 
   const renderHome = () => (
@@ -310,7 +297,7 @@ const App: React.FC = () => {
                                 {/* Experience Button - Shows for both STEM and AI if demoUrl exists */}
                                 {selectedProject.demoUrl && (
                                     <button
-                                        onClick={() => setIframeUrl(selectedProject.demoUrl!)}
+                                        onClick={() => handleExperienceClick(selectedProject.demoUrl!)}
                                         className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/25 hover:-translate-y-1"
                                     >
                                         <ExternalLink size={20} />
@@ -354,8 +341,8 @@ const App: React.FC = () => {
   );
 
   const renderAIGuide = () => (
-    // Updated: Reduced padding to fit better (pt-20 pb-4)
-    <div className="w-full max-w-3xl mx-auto pt-20 pb-4 px-6 h-full flex flex-col animate-in slide-in-from-bottom duration-500">
+    // Updated: Standard padding, rely on OS keyboard
+    <div className="w-full max-w-3xl mx-auto pt-20 pb-48 px-6 h-full flex flex-col animate-in slide-in-from-bottom duration-500">
         <div className="text-center mb-6 shrink-0">
             <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full mx-auto flex items-center justify-center mb-3 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
                 <Bot size={32} className="text-white" />
@@ -364,8 +351,8 @@ const App: React.FC = () => {
             <p className="text-white/50 text-sm">Hỏi tôi về lịch trình, sản phẩm hoặc thông tin về trường</p>
         </div>
 
-        {/* Chat area adapts height when keyboard is shown. mb-[420px] ensures input is visible above the 300px keyboard + nav */}
-        <div className={`flex-1 min-h-0 bg-white/5 border border-white/10 rounded-3xl overflow-hidden flex flex-col backdrop-blur-sm transition-all duration-300 ${showKeyboard ? 'mb-[420px]' : 'mb-24'}`}>
+        {/* Chat area */}
+        <div className="flex-1 min-h-0 bg-white/5 border border-white/10 rounded-3xl overflow-hidden flex flex-col backdrop-blur-sm mb-6 transition-all duration-300">
             <div className="flex-1 overflow-y-auto p-6 space-y-4" >
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -395,7 +382,6 @@ const App: React.FC = () => {
                     type="text" 
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onFocus={() => setShowKeyboard(true)}
                     placeholder="Nhập câu hỏi của bạn..."
                     className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-primary/50 focus:bg-black/40 transition-all"
                 />
@@ -409,29 +395,17 @@ const App: React.FC = () => {
             </form>
         </div>
         
-        {!showKeyboard && (
-            <div className="mt-2 mb-20 flex flex-wrap justify-center gap-2 shrink-0">
-                {["Lịch thi đấu Robotic khi nào?", "Danh sách sản phẩm STEM?", "Giới thiệu trường"].map(suggestion => (
-                    <button 
-                        key={suggestion} 
-                        onClick={() => { setInput(suggestion); handleChatSubmit(); }}
-                        className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors"
-                    >
-                        {suggestion}
-                    </button>
-                ))}
-            </div>
-        )}
-        
-        {/* Virtual Keyboard Overlay */}
-        {showKeyboard && (
-            <VirtualKeyboard 
-                onKeyPress={handleKeyInput}
-                onDelete={handleDeleteInput}
-                onSubmit={() => handleChatSubmit()}
-                onClose={() => setShowKeyboard(false)}
-            />
-        )}
+        <div className="mt-2 flex flex-wrap justify-center gap-2 shrink-0">
+            {["Lịch thi đấu Robotic khi nào?", "Danh sách sản phẩm STEM?", "Giới thiệu trường"].map(suggestion => (
+                <button 
+                    key={suggestion} 
+                    onClick={() => { setInput(suggestion); handleChatSubmit(); }}
+                    className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors"
+                >
+                    {suggestion}
+                </button>
+            ))}
+        </div>
     </div>
   );
 
@@ -439,28 +413,16 @@ const App: React.FC = () => {
       <div className="w-full max-w-5xl mx-auto pt-20 pb-48 px-6 animate-in slide-in-from-right duration-500 flex flex-col md:flex-row gap-12 items-center">
           <div className="w-full md:w-1/2">
               <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-                {!videoError ? (
-                  <video 
-                    className="w-full h-full object-cover" 
-                    controls 
-                    autoPlay 
-                    muted 
-                    loop
-                    playsInline
-                    onError={() => setVideoError(true)}
-                  >
-                      <source src="./intro.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                  </video>
-                ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-white/50 gap-4 p-6 text-center">
-                        <AlertCircle size={48} className="text-white/20" />
-                        <div>
-                            <p className="font-medium text-white mb-1">Không tìm thấy video</p>
-                            <p className="text-xs">Vui lòng đảm bảo file <code className="bg-black/30 px-1 py-0.5 rounded text-primary">intro.mp4</code> nằm trong thư mục gốc (public) của dự án.</p>
-                        </div>
-                    </div>
-                )}
+                  <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/XHSGNiFeSMY?autoplay=1&mute=1&controls=0&loop=1&playlist=XHSGNiFeSMY" 
+                      title="YouTube video player" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                  />
               </div>
           </div>
           <div className="w-full md:w-1/2 space-y-8">
@@ -520,12 +482,24 @@ const App: React.FC = () => {
           <div className="fixed inset-0 z-[70] bg-black flex flex-col animate-in fade-in duration-300">
               <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-white/10 shrink-0">
                   <h3 className="text-white font-medium truncate flex-1 pl-2">Trải nghiệm sản phẩm</h3>
-                  <button
-                      onClick={() => setIframeUrl(null)}
-                      className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
-                  >
-                      <X size={24} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Fallback button for Google Scripts or blocked frames */}
+                    <a 
+                        href={iframeUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-lg transition-colors border border-primary/20"
+                    >
+                        <ExternalLink size={14} />
+                        Mở cửa sổ ngoài
+                    </a>
+                    <button
+                        onClick={() => setIframeUrl(null)}
+                        className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                    >
+                        <X size={24} />
+                    </button>
+                  </div>
               </div>
               <div className="flex-1 w-full bg-white relative">
                    <iframe
