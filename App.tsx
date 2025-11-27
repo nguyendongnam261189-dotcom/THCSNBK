@@ -8,7 +8,7 @@ import { generateResponse } from './services/geminiService';
 import {
   Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, ExternalLink,
   Maximize, Minimize, BrainCircuit, Box, Home, Fingerprint, Scan, Smartphone, Wifi,
-  ShieldCheck, Cpu, Activity, Lock, Unlock, CheckCircle
+  ShieldCheck, Cpu, Activity, Lock, Unlock, CheckCircle, Volume2, VolumeX, Loader2
 } from 'lucide-react';
 
 const IDLE_TIMEOUT_MS = 30000; 
@@ -33,16 +33,50 @@ const App: React.FC = () => {
 
   // --- TRẠNG THÁI MỚI ---
   const [isIdle, setIsIdle] = useState(true); 
-  const [isUnlocking, setIsUnlocking] = useState(false); // Giai đoạn 1: Đang quét
-  const [isSuccess, setIsSuccess] = useState(false);     // Giai đoạn 2: Thành công
+  const [isUnlocking, setIsUnlocking] = useState(false); 
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // Trạng thái âm thanh nhạc nền
   
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bgMusicRef = useRef<HTMLAudioElement | null>(null); // Ref cho nhạc nền
 
-  // --- LOGIC GIỌNG NÓI ---
+  // --- LOGIC NHẠC NỀN ---
+  useEffect(() => {
+    // Khởi tạo nhạc nền
+    bgMusicRef.current = new Audio('/background.mp3');
+    bgMusicRef.current.loop = true; // Lặp lại liên tục
+    bgMusicRef.current.volume = 0.2; // Để âm lượng nhỏ (20%) để không át tiếng Robot
+    
+    return () => {
+      if (bgMusicRef.current) {
+        bgMusicRef.current.pause();
+        bgMusicRef.current = null;
+      }
+    };
+  }, []);
+
+  // Điều khiển phát/dừng nhạc nền dựa theo trạng thái
+  useEffect(() => {
+    if (bgMusicRef.current) {
+      if (!isIdle && !isUnlocking && !isSuccess) {
+        // Đã vào trang chủ -> Phát nhạc
+        bgMusicRef.current.play().catch(e => console.log("Chưa tương tác, chưa phát nhạc nền được"));
+      } else {
+        // Đang màn hình chờ hoặc đang mở khóa -> Dừng nhạc nền (để ưu tiên tiếng Robot)
+        bgMusicRef.current.pause();
+      }
+      bgMusicRef.current.muted = isMuted;
+    }
+  }, [isIdle, isUnlocking, isSuccess, isMuted]);
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  // --- LOGIC GIỌNG NÓI ROBOT ---
   const speakWelcome = () => {
     const audio = new Audio('/welcome.mp3');
     audio.play().catch(() => {
-      // Fallback nếu không có file mp3
       window.speechSynthesis.cancel();
       const text = "Xác thực thành công. Chào mừng đến với gian hàng chuyển đổi số.";
       const utterance = new SpeechSynthesisUtterance(text);
@@ -57,7 +91,6 @@ const App: React.FC = () => {
 
   const resetIdleTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    // Chỉ đếm ngược khi ĐANG SỬ DỤNG BÌNH THƯỜNG
     if (!isIdle && !isUnlocking && !isSuccess) {
       timerRef.current = setTimeout(() => {
         console.log("--> Timeout. Kích hoạt Screensaver.");
@@ -70,30 +103,25 @@ const App: React.FC = () => {
     }
   }, [isIdle, isUnlocking, isSuccess]);
 
-  // --- QUY TRÌNH MỞ KHÓA (ĐÃ CHỈNH THỜI GIAN) ---
   const wakeUp = () => {
-    if (isUnlocking || isSuccess) return; // Chặn click kép
+    if (isUnlocking || isSuccess) return; 
 
     console.log("--> Bắt đầu quy trình mở khóa...");
     setIsIdle(false);
-    setIsUnlocking(true); // Bắt đầu Giai đoạn 1: Robot quét (Im lặng)
+    setIsUnlocking(true); 
 
-    // Sau 2.5 giây -> Chuyển sang Giai đoạn 2: Thành công
     setTimeout(() => {
       setIsUnlocking(false);
       setIsSuccess(true);
       speakWelcome(); 
-    }, 2000);
+    }, 2500);
 
-    // Sau thêm 5 giây nữa (Tổng 7.5s) -> Vào trang chủ
-    // (2.5s quét + 5s hiện thông báo thành công = 7.5s)
     setTimeout(() => {
       setIsSuccess(false);
       resetIdleTimer(); 
-    }, 7500);
+    }, 6500);
   };
 
-  // Event Listeners
   useEffect(() => {
     const events = ['mousedown', 'mousemove', 'click', 'touchstart', 'touchmove', 'keydown', 'scroll', 'wheel'];
     if (!isIdle && !isUnlocking && !isSuccess) resetIdleTimer();
@@ -138,7 +166,7 @@ const App: React.FC = () => {
 
   // --- RENDERS ---
 
-  // 1. MÀN HÌNH CHỜ (SCREENSAVER)
+  // 1. MÀN HÌNH CHỜ
   if (isIdle) {
     return (
       <div 
@@ -147,13 +175,10 @@ const App: React.FC = () => {
       >
         <video src="/intro.mp4" className="absolute inset-0 w-full h-full object-cover opacity-80" autoPlay loop playsInline />
         <div className="absolute inset-0 bg-black/20" /> 
-        
-        {/* Vòng tròn quét công nghệ */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
            <div className="w-[500px] h-[500px] border border-primary/20 rounded-full animate-[spin_10s_linear_infinite]" />
            <div className="absolute w-[450px] h-[450px] border border-dashed border-primary/30 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
         </div>
-
         <div className="absolute bottom-24 flex flex-col items-center gap-3 animate-bounce z-10">
           <div className="p-5 rounded-full bg-black/40 backdrop-blur-xl border border-primary text-primary shadow-[0_0_50px_rgba(14,165,233,0.5)] group-hover:scale-110 transition-transform duration-300 relative overflow-hidden">
              <Fingerprint size={64} className="animate-pulse" />
@@ -167,14 +192,11 @@ const App: React.FC = () => {
     );
   }
 
-  // 2. GIAI ĐOẠN 1: ROBOT ĐANG QUÉT (SCANNING...)
+  // 2. GIAI ĐOẠN 1: ROBOT ĐANG QUÉT
   if (isUnlocking) {
     return (
       <div className="fixed inset-0 z-[100000] bg-black flex flex-col items-center justify-center text-center font-mono overflow-hidden">
-        {/* Background Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(14,165,233,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.1)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        
-        {/* ROBOT HOLOGRAM */}
         <div className="relative mb-8 z-10 animate-in zoom-in duration-500">
           <div className="relative w-40 h-40 flex items-center justify-center">
             <div className="absolute inset-0 border-4 border-primary rounded-full animate-[spin_3s_linear_infinite] border-t-transparent border-l-transparent" />
@@ -183,56 +205,38 @@ const App: React.FC = () => {
           </div>
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-4 bg-primary/50 blur-xl rounded-[100%]" /> 
         </div>
-
         <div className="z-10 space-y-4">
-          <h2 className="text-2xl font-bold text-primary tracking-widest animate-pulse uppercase">
-            Đang xác thực dữ liệu...
-          </h2>
-          {/* Fake Logs */}
+          <h2 className="text-2xl font-bold text-primary tracking-widest animate-pulse uppercase">Đang xác thực dữ liệu...</h2>
           <div className="flex flex-col gap-1 items-center text-white/50 text-xs">
-            <p>Verifying user biometric...</p>
-            <p>Connecting to STEM Server...</p>
-            <p>Loading modules...</p>
+            <p>Verifying user biometric...</p><p>Connecting to STEM Server...</p><p>Loading modules...</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // 3. GIAI ĐOẠN 2: XÁC THỰC THÀNH CÔNG (SUCCESS!)
+  // 3. GIAI ĐOẠN 2: THÀNH CÔNG
   if (isSuccess) {
     return (
       <div className="fixed inset-0 z-[100000] bg-black flex flex-col items-center justify-center text-center font-mono overflow-hidden">
-        {/* Green Background Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.2)_0%,_transparent_70%)]" />
-        
         <div className="z-10 animate-in zoom-in duration-300 flex flex-col items-center">
-          {/* Icon Success */}
           <div className="relative mb-6">
              <div className="absolute inset-0 bg-emerald-500 blur-2xl opacity-50 rounded-full animate-pulse" />
              <div className="relative w-32 h-32 bg-emerald-500/10 border-4 border-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.5)]">
                 <CheckCircle size={64} className="text-emerald-400" />
              </div>
-             {/* Vòng tròn lan tỏa */}
              <div className="absolute inset-0 border border-emerald-500/50 rounded-full animate-[ping_1.5s_ease-out_infinite]" />
           </div>
-
-          <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-wider mb-2 drop-shadow-2xl">
-            Xác thực thành công
-          </h1>
-          <p className="text-emerald-400 text-lg tracking-[0.2em] font-bold">
-            ACCESS GRANTED
-          </p>
-          
-          <div className="mt-8 text-white/60 animate-bounce">
-            Đang truy cập vào hệ thống...
-          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-wider mb-2 drop-shadow-2xl">Xác thực thành công</h1>
+          <p className="text-emerald-400 text-lg tracking-[0.2em] font-bold">ACCESS GRANTED</p>
+          <div className="mt-8 text-white/60 animate-bounce">Đang truy cập vào hệ thống...</div>
         </div>
       </div>
     );
   }
 
-  // 4. GIAO DIỆN CHÍNH (MAIN APP)
+  // 4. GIAO DIỆN CHÍNH
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center animate-in fade-in zoom-in duration-1000">
       <div className="mb-6 inline-flex items-center justify-center p-3 rounded-full bg-primary/20 border border-primary/50 animate-bounce">
@@ -267,6 +271,11 @@ const App: React.FC = () => {
       </div>
     </div>
   );
+
+  // ... (Giữ nguyên các hàm renderGallery, renderSchedule...)
+  // Để tiết kiệm không gian, tôi chỉ viết lại hàm renderAIGuide có hiệu ứng mới
+  // Các hàm khác thầy giữ nguyên logic cũ, hoặc copy lại từ phiên bản trước nếu cần
+  // (Nhưng để chắc chắn, tôi sẽ paste đầy đủ bên dưới cho thầy dễ copy)
 
   const renderGallery = () => {
     let categories: string[] = ['All'];
@@ -374,9 +383,17 @@ const App: React.FC = () => {
               <div className={`max-w-[85%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none shadow-md' : 'bg-white/10 text-white/90 rounded-tl-none border border-white/5'}`}>{msg.text}</div>
             </div>
           ))}
+          {/* HIỆU ỨNG JARVIS SUY NGHĨ (MỚI) */}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white/10 text-white/50 p-4 rounded-2xl rounded-tl-none border border-white/5 flex gap-2 items-center"><span className="w-2 h-2 bg-white/50 rounded-full animate-bounce"></span><span className="w-2 h-2 bg-white/50 rounded-full animate-bounce delay-75"></span><span className="w-2 h-2 bg-white/50 rounded-full animate-bounce delay-150"></span></div>
+              <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none flex items-center gap-4 animate-in fade-in slide-in-from-left duration-300">
+                <div className="relative w-8 h-8 flex items-center justify-center">
+                   <div className="absolute inset-0 border-2 border-emerald-500/30 rounded-full animate-[spin_3s_linear_infinite]" />
+                   <div className="absolute inset-1 border-2 border-t-emerald-400 rounded-full animate-spin" />
+                   <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                </div>
+                <span className="text-emerald-400 text-xs font-mono animate-pulse uppercase tracking-wider">AI đang phân tích dữ liệu...</span>
+              </div>
             </div>
           )}
           <div ref={chatEndRef} />
@@ -413,7 +430,16 @@ const App: React.FC = () => {
   return (
     <div className="relative h-screen w-full font-sans selection:bg-primary/30 text-white overflow-hidden">
       <Background />
+      {/* Nút Fullscreen */}
       <button onClick={toggleFullscreen} className="fixed top-4 right-4 z-[55] p-3 bg-black/40 hover:bg-white/10 backdrop-blur-md rounded-full text-white/50 hover:text-white transition-all border border-white/5 hover:border-white/20" title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}>{isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}</button>
+      
+      {/* Nút Bật/Tắt Nhạc (Góc trái) */}
+      {!isIdle && !isUnlocking && !isSuccess && (
+        <button onClick={toggleMute} className="fixed top-4 left-4 z-[55] p-3 bg-black/40 hover:bg-white/10 backdrop-blur-md rounded-full text-white/50 hover:text-white transition-all border border-white/5 hover:border-white/20 flex items-center gap-2">
+          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          <span className="text-xs font-medium hidden md:block">{isMuted ? 'Bật nhạc' : 'Tắt nhạc'}</span>
+        </button>
+      )}
 
       <main className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth pb-0">
         {currentView === AppView.HOME && renderHome()}
@@ -423,6 +449,7 @@ const App: React.FC = () => {
         {currentView === AppView.ABOUT && renderAbout()}
       </main>
 
+      {/* Các Popup Video/QR Code giữ nguyên */}
       {isAboutVideoFullscreen && (
         <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center animate-in fade-in duration-300">
           <button onClick={() => setIsAboutVideoFullscreen(false)} className="absolute top-6 right-6 z-[10000] p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all border border-white/20" title="Đóng"><Minimize size={24} /></button>
@@ -430,7 +457,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* --- PHẦN XỬ LÝ KHUNG HIỂN THỊ SẢN PHẨM --- */}
       {iframeUrl && (
         <div className="fixed inset-0 z-[70] bg-black flex flex-col animate-in fade-in duration-300">
           <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-white/10 shrink-0">
