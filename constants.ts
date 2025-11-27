@@ -54,7 +54,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=800&auto=format&fit=crop', // Renewable energy
         authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
-        demoUrl: 'https://example.com/demo/energy'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/renewable-energy-usage-model-m%C3%B4-h%C3%ACnh-n%C4%83ng-l%C6%B0%E1%BB%A3ng-t%C3%A1i-t%E1%BA%A1o-t%C3%ADch-h%E1%BB%A3p-ai'
     },
     {
         id: '3',
@@ -65,7 +65,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?q=80&w=800&auto=format&fit=crop', // IoT
         authors: 'Nguyễn Thị Thu Lợi',
-        demoUrl: 'https://example.com/demo-iot'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%87-th%E1%BB%91ng-gi%C3%A1m-s%C3%A1t-v%C3%A0-%C4%91i%E1%BB%81u-khi%E1%BB%83n-ch%E1%BA%A5t-l%C6%B0%E1%BB%A3ng-m%C3%B4i-tr%C6%B0%E1%BB%9Dng-ph%C3%B2ng-ch%E1%BB%91ng-ch%C3%A1y-n%E1%BB%95'
     },
     {
         id: '4',
@@ -76,7 +76,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1533653163339-17d456184cf4?q=80&w=800&auto=format&fit=crop', // Danang/City
         authors: 'Nguyễn Thị Hoài Thi, Trần Nguyễn Huyền Trang',
-        demoUrl: 'https://example.com/demo/danang'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/d%E1%BB%B1-%C3%A1n-%C4%91%C3%A0-n%E1%BA%B5ng-k%E1%BA%BF-th%E1%BB%ABa-v%C3%A0-ph%C3%A1t-tri%E1%BB%83n'
     },
     {
         id: '5',
@@ -87,7 +87,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1632363065275-f12b6f10359f?q=80&w=800&auto=format&fit=crop', // Mushrooms
         authors: 'Nguyễn Thị Yến, Lê Thị Nết',
-        demoUrl: 'https://example.com/demo/mushroom'
+        demoUrl: 'https://www.google.com/search?q=https://sites.google.com/view/stemthcsnguyenbinhkhiem/n%25E1%25BA%25A5m-b%25C3%25A%C3%A0o-ng%25C6%25B0-t%25C3%25A%C3%A1i-sinh'
     },
     {
         id: '6',
@@ -98,7 +98,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=800&auto=format&fit=crop', // Smart garden
         authors: 'Hoàng Thị Sương',
-        demoUrl: 'https://example.com/demo/garden'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/v%C6%B0%E1%BB%9Dn-th%C3%B4ng-minh'
     },
     {
         id: '7',
@@ -109,7 +109,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1516962215378-7fa2e137ae91?q=80&w=800&auto=format&fit=crop', // Stationary
         authors: 'Hoàng Thị Sương',
-        demoUrl: 'https://example.com/demo/pencilbox'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%99p-b%C3%BAt-th%C3%B4ng-minh'
     },
     {
         id: '8',
@@ -120,7 +120,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1454789476662-bdd716092aac?q=80&w=800&auto=format&fit=crop', // Flood/Disaster
         authors: 'Nguyễn Thị A Kim, Lê Thị Thanh Thương',
-        demoUrl: 'https://example.com/demo/flood'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/m%C3%B4-h%C3%ACnh-c%E1%BA%A3nh-b%C3%A1o-l%C5%A9-v%C3%A0-s%E1%BA%A1t-l%E1%BB%9F-%C4%91%E1%BA%A5t'
     },
     {
         id: '9',
@@ -131,7 +131,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop', // Smart board
         authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
-        demoUrl: 'https://example.com/smart-board'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/testing-smart-board-b%E1%BA%A3ng-tr%E1%BA%AFc-nghi%E1%BB%87m-ti%E1%BA%BFng-anh-th%C3%B4ng-minh-t%C3%ADch-h%E1%BB%A3p-ai'
     },
     {
         id: '10',
@@ -142,7 +142,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1507842217121-ad0773cf4a0f?q=80&w=800&auto=format&fit=crop', // Library
         authors: 'Huỳnh Quốc Khánh',
-        demoUrl: 'https://example.com/library'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/website-th%C6%B0-vi%E1%BB%87n-h%E1%BB%8Dc-li%E1%BB%87u-s%E1%BB%91-v%C3%A0-t%C6%B0%C6%A1ng-t%C3%A1c-li%C3%AAn-m%C3%B4n'
     },
     {
         id: '11',
@@ -153,7 +153,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop', // Vision
         authors: 'Trịnh Hoàng Sơn',
-        demoUrl: 'https://example.com/vision-control'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/vision-control-%E1%BB%A9ng-d%E1%BB%A5ng-x%E1%BB%AD-l%C3%BD-h%C3%ACnh-%E1%BA%A3nh-v%C3%A0-m%C3%A1y-chi%E1%BA%BFu-%C4%91%E1%BB%83-chuy%E1%BB%83n-b%E1%BA%A3ng-th%C6%B0%E1%BB%9Dng'
     },
     {
         id: '12',
@@ -164,7 +164,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop', // Math park
         authors: 'Nguyễn Thị Vân',
-        demoUrl: 'https://example.com/demo/mathpark'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/c%C3%B4ng-vi%C3%AAn-to%C3%A1n-h%E1%BB%8Dc'
     },
     {
         id: '13',
@@ -175,7 +175,7 @@ export const PROJECTS: Project[] = [
         coverImage: STEM_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1596443686812-2f45229eebc3?q=80&w=800&auto=format&fit=crop', // Spiral art
         authors: 'Trần Thiên Ân, Nguyễn Đức Khôi',
-        demoUrl: 'https://example.com/demo/spiral'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/spiralart-v%E1%BA%BD-hoa-v%C4%83n-to%C3%A1n-h%E1%BB%8Dc-spirograph-ngh%E1%BB%87-thu%E1%BA%ADt-t%E1%BB%AB-chuy%E1%BB%83n-%C4%91%E1%BB%99ng-%C4%91%E1%BB%81u'
     },
     // --- AI APPLICATIONS ---
     {
@@ -187,7 +187,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1626785774573-4b79931434f3?q=80&w=800&auto=format&fit=crop', // Animation
         authors: 'Võ Thị Thu Bình',
-        demoUrl: 'https://example.com/demo/animation'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-ai-%C4%91%E1%BB%83-t%E1%BA%A1o-video-ho%E1%BA%A1t-h%C3%ACnh'
     },
     {
         id: '15',
@@ -198,7 +198,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1518932945647-7a1c969f8be2?q=80&w=800&auto=format&fit=crop', // Museum
         authors: 'Trần Thiên Ân',
-        demoUrl: 'https://example.com/demo/museum'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/b%E1%BA%A3o-t%C3%A0ng-s%E1%BB%91-tri%E1%BB%83n-l%C3%A3m-to%C3%A1n-h%E1%BB%8Dc'
     },
     {
         id: '16',
@@ -209,7 +209,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=800&auto=format&fit=crop', // Books
         authors: 'Nguyễn Thị Diệu Hiền',
-        demoUrl: 'https://example.com/demo/lit'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-%C4%91%E1%BB%83-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-ng%E1%BB%AF-v%C4%83n-6'
     },
     {
         id: '17',
@@ -220,7 +220,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?q=80&w=800&auto=format&fit=crop', // Sound wave
         authors: 'Nguyễn Thị Như Ngọc',
-        demoUrl: 'https://example.com/demo/voice'
+        demoUrl: 'https://www.google.com/search?q=https://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%25E1%25BA%25BFt-k%25E1%25BA%25BF-b%25C3%25A0i-gi%25E1%25BA%25A3ng-c%25C3%25B3-gi%25E1%25BB%258Dng-n%25C3%25B3i-ai-v%25C3%25A0-video-sinh-%25C4%2591i%25E1%25BB%2599ng'
     },
     {
         id: '18',
@@ -231,7 +231,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop', // Math game
         authors: 'Nguyễn Phước Diễm',
-        demoUrl: 'https://example.com/demo/mathgame'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%E1%BA%BFt-k%E1%BA%BF-tr%C3%B2-ch%C6%A1i-to%C3%A1n-h%E1%BB%8Dc-b%E1%BA%B1ng-canva-ai-v%C3%A0-chatgpt'
     },
     {
         id: '19',
@@ -242,7 +242,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop', // Analytics
         authors: 'Phạm Tường Vy',
-        demoUrl: 'https://example.com/demo/analytics'
+        demoUrl: 'http://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%E1%BA%BFt-k%E1%BA%BF-h%E1%BB%87-th%E1%BB%91ng-ph%C3%A2n-t%C3%ADch-h%E1%BB%8Dc-l%E1%BB%B1c-b%E1%BA%B1ng-ai'
     },
     {
         id: '20',
@@ -253,7 +253,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=800&auto=format&fit=crop', // English learning
         authors: 'Lê Thanh Nghi',
-        demoUrl: 'https://example.com/demo/english'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-notebooklm-trong-m%C3%B4n-ti%E1%BA%BFng-anh'
     },
     {
         id: '21',
@@ -264,7 +264,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=800&auto=format&fit=crop', // Story book
         authors: 'Nguyễn Phạm Minh Nguyệt',
-        demoUrl: 'https://example.com/demo/story'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%8Dc-k%E1%BB%83-truy%E1%BB%87n-c%C3%B9ng-ai-b%C3%A0i-n%C3%B3i-v%C3%A0-nghe-k%E1%BB%83-l%E1%BA%A1i-m%E1%BB%99t-truy%E1%BB%87n-c%E1%BB%95-t%C3%ADch'
     },
     {
         id: '22',
@@ -275,7 +275,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop', // Digital code
         authors: 'Dương Thị Mỹ Lệ',
-        demoUrl: 'https://example.com/demo/lesson'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-trong-x%C3%A2y-d%E1%BB%B1ng-v%C3%A0-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-%C4%91i%E1%BB%87n-t%E1%BB%AD'
     },
     {
         id: '23',
@@ -286,7 +286,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=800&auto=format&fit=crop', // Chemistry
         authors: 'Huỳnh Quốc Khánh',
-        demoUrl: 'https://example.com/demo/periclick'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/periclick-b%E1%BA%A3ng-h%E1%BB%87-th%E1%BB%91ng-tu%E1%BA%A7n-ho%C3%A0n-t%C6%B0%C6%A1ng-t%C3%A1c'
     },
     {
         id: '24',
@@ -308,7 +308,7 @@ export const PROJECTS: Project[] = [
         coverImage: AI_COVER_IMAGE,
         imageUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=800&auto=format&fit=crop', // Chemical structure
         authors: 'Hoàng Thị Lệ Thủy',
-        demoUrl: 'https://example.com/demo/chemistry'
+        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-trong-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-%C4%91i%E1%BB%87n-t%E1%BB%AD-b%C3%A0i-26-ethylic-a'
     }
 ];
 
