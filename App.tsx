@@ -8,7 +8,7 @@ import { generateResponse } from './services/geminiService';
 import {
   Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, ExternalLink,
   Maximize, Minimize, BrainCircuit, Box, Home, Fingerprint, Scan, Smartphone, Wifi,
-  ShieldCheck, Cpu, Activity
+  ShieldCheck, Cpu, Activity, Lock, Unlock, CheckCircle
 } from 'lucide-react';
 
 const IDLE_TIMEOUT_MS = 30000; 
@@ -31,52 +31,34 @@ const App: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAboutVideoFullscreen, setIsAboutVideoFullscreen] = useState(false);
 
-  // --- TRẠNG THÁI ---
+  // --- TRẠNG THÁI MỚI ---
   const [isIdle, setIsIdle] = useState(true); 
-  const [isUnlocking, setIsUnlocking] = useState(false); 
+  const [isUnlocking, setIsUnlocking] = useState(false); // Giai đoạn 1: Đang quét
+  const [isSuccess, setIsSuccess] = useState(false);     // Giai đoạn 2: Thành công
+  
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // --- LOGIC GIỌNG NÓI TRỢ LÝ ẢO (ĐÃ NÂNG CẤP) ---
+  // --- LOGIC GIỌNG NÓI ---
   const speakWelcome = () => {
-    // Cách 1: Ưu tiên dùng file MP3 chuẩn (nếu thầy đã tải lên public/welcome.mp3)
     const audio = new Audio('/welcome.mp3');
     audio.play().catch(() => {
-      // Cách 2: Nếu không có file MP3, dùng giọng Robot của trình duyệt (Fallback)
-      console.log("Không tìm thấy welcome.mp3, dùng giọng máy.");
-      window.speechSynthesis.cancel(); // Dừng các âm thanh cũ
-
-      // Câu nói ngắn gọn hơn để kịp thời gian
-      const text = "Hệ thống đã kích hoạt. Chào mừng đến với gian hàng chuyển đổi số.";
+      // Fallback nếu không có file mp3
+      window.speechSynthesis.cancel();
+      const text = "Xác thực thành công. Chào mừng đến với gian hàng chuyển đổi số.";
       const utterance = new SpeechSynthesisUtterance(text);
-      
-      // Cố gắng tìm giọng tiếng Việt
       const voices = window.speechSynthesis.getVoices();
       const vnVoice = voices.find(v => v.lang.includes('vi'));
-      
-      if (vnVoice) {
-        utterance.voice = vnVoice;
-        utterance.lang = 'vi-VN';
-      }
-
-      // Tăng tốc độ đọc lên để không bị chậm (1.4 là khá nhanh)
-      utterance.rate = 1.4; 
-      utterance.pitch = 1.1; // Giọng cao hơn chút cho giống máy
-
+      if (vnVoice) utterance.voice = vnVoice;
+      utterance.rate = 1.2; 
+      utterance.pitch = 1.1;
       window.speechSynthesis.speak(utterance);
     });
   };
 
-  // Pre-load giọng nói (Fix lỗi Chrome lần đầu không tìm thấy giọng)
-  useEffect(() => {
-    const loadVoices = () => { window.speechSynthesis.getVoices(); };
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }, []);
-
   const resetIdleTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (!isIdle && !isUnlocking) {
+    // Chỉ đếm ngược khi ĐANG SỬ DỤNG BÌNH THƯỜNG
+    if (!isIdle && !isUnlocking && !isSuccess) {
       timerRef.current = setTimeout(() => {
         console.log("--> Timeout. Kích hoạt Screensaver.");
         setCurrentView(AppView.HOME);
@@ -86,38 +68,45 @@ const App: React.FC = () => {
         setIsIdle(true);
       }, IDLE_TIMEOUT_MS);
     }
-  }, [isIdle, isUnlocking]);
+  }, [isIdle, isUnlocking, isSuccess]);
 
+  // --- QUY TRÌNH MỞ KHÓA (ĐÃ CHỈNH SỬA) ---
   const wakeUp = () => {
-    if (isUnlocking) return;
+    if (isUnlocking || isSuccess) return; // Chặn click kép
 
     console.log("--> Bắt đầu quy trình mở khóa...");
     setIsIdle(false);
-    setIsUnlocking(true); 
+    setIsUnlocking(true); // Bắt đầu Giai đoạn 1: Robot quét (Im lặng)
 
-    // Phát giọng nói
-    speakWelcome();
-
-    // Tăng thời gian chờ lên 4 giây (4000ms) để khớp với giọng nói
+    // Sau 2.5 giây -> Chuyển sang Giai đoạn 2: Thành công (Màn hình Xanh)
+    // VÀ BẮT ĐẦU PHÁT TIẾNG Ở ĐÂY
     setTimeout(() => {
       setIsUnlocking(false);
+      setIsSuccess(true);
+      speakWelcome(); // <--- Đã di chuyển xuống đây cho khớp hình
+    }, 2500);
+
+    // Sau thêm 4 giây nữa (Tổng 6.5s) -> Vào trang chủ
+    // Tăng thời gian chờ để giọng đọc nói hết câu
+    setTimeout(() => {
+      setIsSuccess(false);
       resetIdleTimer(); 
-    }, 4000);
+    }, 6500);
   };
 
+  // Event Listeners
   useEffect(() => {
     const events = ['mousedown', 'mousemove', 'click', 'touchstart', 'touchmove', 'keydown', 'scroll', 'wheel'];
-    if (!isIdle && !isUnlocking) resetIdleTimer();
-    const handleActivity = () => { if (!isIdle && !isUnlocking) resetIdleTimer(); };
+    if (!isIdle && !isUnlocking && !isSuccess) resetIdleTimer();
+    const handleActivity = () => { if (!isIdle && !isUnlocking && !isSuccess) resetIdleTimer(); };
     events.forEach(event => window.addEventListener(event, resetIdleTimer));
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       events.forEach(event => window.removeEventListener(event, resetIdleTimer));
     };
-  }, [isIdle, isUnlocking, resetIdleTimer]);
+  }, [isIdle, isUnlocking, isSuccess, resetIdleTimer]);
 
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
-
   useEffect(() => {
     const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -179,7 +168,7 @@ const App: React.FC = () => {
     );
   }
 
-  // 2. MÀN HÌNH HIỆU ỨNG MỞ KHÓA (LOGIN EFFECT)
+  // 2. GIAI ĐOẠN 1: ROBOT ĐANG QUÉT (SCANNING...)
   if (isUnlocking) {
     return (
       <div className="fixed inset-0 z-[100000] bg-black flex flex-col items-center justify-center text-center font-mono overflow-hidden">
@@ -196,34 +185,55 @@ const App: React.FC = () => {
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-4 bg-primary/50 blur-xl rounded-[100%]" /> 
         </div>
 
-        {/* Text Loading Effect */}
         <div className="z-10 space-y-4">
-          <h2 className="text-3xl font-bold text-white tracking-widest animate-pulse">
-            SYSTEM ACCESS GRANTED
+          <h2 className="text-2xl font-bold text-primary tracking-widest animate-pulse uppercase">
+            Đang xác thực dữ liệu...
           </h2>
-          
-          <div className="flex flex-col gap-2 items-center text-primary/80 text-sm">
-            <div className="flex items-center gap-2">
-               <ShieldCheck size={16} /> <span>Đang xác thực danh tính... <span className="text-green-400 font-bold">OK</span></span>
-            </div>
-            <div className="flex items-center gap-2 delay-1000 animate-in fade-in fill-mode-forwards opacity-0" style={{animationDelay: '0.5s'}}>
-               <Cpu size={16} /> <span>Kết nối máy chủ STEM... <span className="text-green-400 font-bold">OK</span></span>
-            </div>
-            <div className="flex items-center gap-2 delay-2000 animate-in fade-in fill-mode-forwards opacity-0" style={{animationDelay: '1.5s'}}>
-               <Activity size={16} /> <span>Tải dữ liệu chuyển đổi số... <span className="text-green-400 font-bold">100%</span></span>
-            </div>
-          </div>
-
-          {/* Loading Bar */}
-          <div className="w-64 h-1 bg-white/20 rounded-full mt-6 overflow-hidden mx-auto">
-             <div className="h-full bg-gradient-to-r from-primary to-secondary w-full animate-[translateX_3s_ease-in-out]" />
+          {/* Fake Logs */}
+          <div className="flex flex-col gap-1 items-center text-white/50 text-xs">
+            <p>Verifying user biometric...</p>
+            <p>Connecting to STEM Server...</p>
+            <p>Loading modules...</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // 3. GIAO DIỆN CHÍNH (MAIN APP)
+  // 3. GIAI ĐOẠN 2: XÁC THỰC THÀNH CÔNG (SUCCESS!)
+  if (isSuccess) {
+    return (
+      <div className="fixed inset-0 z-[100000] bg-black flex flex-col items-center justify-center text-center font-mono overflow-hidden">
+        {/* Green Background Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.2)_0%,_transparent_70%)]" />
+        
+        <div className="z-10 animate-in zoom-in duration-300 flex flex-col items-center">
+          {/* Icon Success */}
+          <div className="relative mb-6">
+             <div className="absolute inset-0 bg-emerald-500 blur-2xl opacity-50 rounded-full animate-pulse" />
+             <div className="relative w-32 h-32 bg-emerald-500/10 border-4 border-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.5)]">
+                <CheckCircle size={64} className="text-emerald-400" />
+             </div>
+             {/* Vòng tròn lan tỏa */}
+             <div className="absolute inset-0 border border-emerald-500/50 rounded-full animate-[ping_1.5s_ease-out_infinite]" />
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-wider mb-2 drop-shadow-2xl">
+            Xác thực thành công
+          </h1>
+          <p className="text-emerald-400 text-lg tracking-[0.2em] font-bold">
+            ACCESS GRANTED
+          </p>
+          
+          <div className="mt-8 text-white/60 animate-bounce">
+            Đang truy cập vào hệ thống...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 4. GIAI ĐOẠN CHÍNH (MAIN APP)
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center animate-in fade-in zoom-in duration-1000">
       <div className="mb-6 inline-flex items-center justify-center p-3 rounded-full bg-primary/20 border border-primary/50 animate-bounce">
@@ -487,7 +497,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {!isIdle && !isUnlocking && (
+      {!isIdle && !isUnlocking && !isSuccess && (
          <Navigation currentView={currentView} onNavigate={setCurrentView} />
       )}
     </div>
