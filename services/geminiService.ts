@@ -13,8 +13,9 @@ let model: ReturnType<GoogleGenerativeAI["getGenerativeModel"]> | null = null;
 if (apiKey) {
   const genAI = new GoogleGenerativeAI(apiKey);
   // Bạn có thể đổi model nếu muốn, ví dụ "gemini-2.0-flash"
-  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 } else {
+  // Chỉ cảnh báo khi chạy ở chế độ dev, để bản deploy không spam console
   if (import.meta.env.DEV) {
     console.warn("VITE_GEMINI_API_KEY is missing. AI features will not work.");
   }
@@ -44,7 +45,7 @@ ${scheduleData}
 
 LƯU Ý KHI TRẢ LỜI:
 1. Bạn là đại diện của trường, hãy trả lời thân thiện, tự hào và ngắn gọn.
-2. Chỉ trả lời các thông tin liên quan đến trường Nguyễn Bỉnh Khiêm, gian hàng số 17 và Ngày hội chuyển đổi số.
+2. Chỉ trả lời các thông tin liên quan đến trường Nguyễn Bỉnh Khiêm, gian hàng số 40 và Ngày hội chuyển đổi số.
 3. Nếu được hỏi về một sản phẩm cụ thể, hãy trích dẫn tên tác giả và mô tả.
 4. Nếu được hỏi về lịch trình, hãy cung cấp giờ và địa điểm chính xác.
 `;
@@ -52,6 +53,7 @@ LƯU Ý KHI TRẢ LỜI:
 
 // Hàm dùng trong App.tsx để gọi AI
 export const generateResponse = async (userMessage: string): Promise<string> => {
+  // Nếu chưa có model (chưa cấu hình API Key) thì trả lời nhẹ nhàng, không throw lỗi
   if (!model) {
     return "Xin lỗi, tôi chưa được kết nối với hệ thống AI (thiếu API Key). Vui lòng báo với thầy/cô phụ trách gian hàng kiểm tra cấu hình.";
   }
