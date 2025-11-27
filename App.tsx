@@ -70,7 +70,7 @@ const App: React.FC = () => {
     }
   }, [isIdle, isUnlocking, isSuccess]);
 
-  // --- QUY TRÌNH MỞ KHÓA (ĐÃ CHỈNH SỬA) ---
+  // --- QUY TRÌNH MỞ KHÓA (ĐÃ CHỈNH THỜI GIAN) ---
   const wakeUp = () => {
     if (isUnlocking || isSuccess) return; // Chặn click kép
 
@@ -78,20 +78,19 @@ const App: React.FC = () => {
     setIsIdle(false);
     setIsUnlocking(true); // Bắt đầu Giai đoạn 1: Robot quét (Im lặng)
 
-    // Sau 2.5 giây -> Chuyển sang Giai đoạn 2: Thành công (Màn hình Xanh)
-    // VÀ BẮT ĐẦU PHÁT TIẾNG Ở ĐÂY
+    // Sau 2.5 giây -> Chuyển sang Giai đoạn 2: Thành công
     setTimeout(() => {
       setIsUnlocking(false);
       setIsSuccess(true);
-      speakWelcome(); // <--- Đã di chuyển xuống đây cho khớp hình
+      speakWelcome(); 
     }, 2500);
 
-    // Sau thêm 4 giây nữa (Tổng 6.5s) -> Vào trang chủ
-    // Tăng thời gian chờ để giọng đọc nói hết câu
+    // Sau thêm 5 giây nữa (Tổng 7.5s) -> Vào trang chủ
+    // (2.5s quét + 5s hiện thông báo thành công = 7.5s)
     setTimeout(() => {
       setIsSuccess(false);
       resetIdleTimer(); 
-    }, 6500);
+    }, 7500);
   };
 
   // Event Listeners
@@ -233,7 +232,7 @@ const App: React.FC = () => {
     );
   }
 
-  // 4. GIAI ĐOẠN CHÍNH (MAIN APP)
+  // 4. GIAO DIỆN CHÍNH (MAIN APP)
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center animate-in fade-in zoom-in duration-1000">
       <div className="mb-6 inline-flex items-center justify-center p-3 rounded-full bg-primary/20 border border-primary/50 animate-bounce">
