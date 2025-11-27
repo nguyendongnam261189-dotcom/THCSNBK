@@ -83,7 +83,7 @@ const App: React.FC = () => {
       setIsUnlocking(false);
       setIsSuccess(true);
       speakWelcome(); 
-    }, 2500);
+    }, 2000);
 
     // Sau thêm 5 giây nữa (Tổng 7.5s) -> Vào trang chủ
     // (2.5s quét + 5s hiện thông báo thành công = 7.5s)
