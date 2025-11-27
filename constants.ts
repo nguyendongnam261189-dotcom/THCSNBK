@@ -41,7 +41,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Mô hình bản đồ tương tác giúp tìm hiểu địa lý và môi trường Việt Nam.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800&auto=format&fit=crop', // Map illustration
+        imageUrl: "/01.png", // Map illustration
         authors: 'Nguyễn Thị Diệu Hiền, Phan Thị Ngọc Lý',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/b%E1%BA%A3n-%C4%91%E1%BB%93-vi%E1%BB%87t-nam-th%C3%B4ng-minh-smartmap-34'
     },
@@ -52,7 +52,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Mô hình năng lượng tái tạo tích hợp AI, tối ưu hóa việc sử dụng năng lượng sạch.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=800&auto=format&fit=crop', // Renewable energy
+        imageUrl:  "/02.png", // Renewable energy
         authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/renewable-energy-usage-model-m%C3%B4-h%C3%ACnh-n%C4%83ng-l%C6%B0%E1%BB%A3ng-t%C3%A1i-t%E1%BA%A1o-t%C3%ADch-h%E1%BB%A3p-ai'
     },
@@ -63,7 +63,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Hệ thống giám sát và điều khiển chất lượng môi trường, phòng chống cháy nổ sử dụng IOT và CHATBOT.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?q=80&w=800&auto=format&fit=crop', // IoT
+        imageUrl:  "/03.png", // IoT
         authors: 'Nguyễn Thị Thu Lợi',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%87-th%E1%BB%91ng-gi%C3%A1m-s%C3%A1t-v%C3%A0-%C4%91i%E1%BB%81u-khi%E1%BB%83n-ch%E1%BA%A5t-l%C6%B0%E1%BB%A3ng-m%C3%B4i-tr%C6%B0%E1%BB%9Dng-ph%C3%B2ng-ch%E1%BB%91ng-ch%C3%A1y-n%E1%BB%95'
     },
@@ -74,7 +74,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Mô hình thể hiện sự phát triển đô thị bền vững của Đà Nẵng.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1533653163339-17d456184cf4?q=80&w=800&auto=format&fit=crop', // Danang/City
+        imageUrl:  "/04.png", // Danang/City
         authors: 'Nguyễn Thị Hoài Thi, Trần Nguyễn Huyền Trang',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/d%E1%BB%B1-%C3%A1n-%C4%91%C3%A0-n%E1%BA%B5ng-k%E1%BA%BF-th%E1%BB%ABa-v%C3%A0-ph%C3%A1t-tri%E1%BB%83n'
     },
@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Mô hình nuôi trồng nấm bào ngư tận dụng phế phẩm nông nghiệp, bảo vệ môi trường.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1632363065275-f12b6f10359f?q=80&w=800&auto=format&fit=crop', // Mushrooms
+        imageUrl:  "/05.png", // Mushrooms
         authors: 'Nguyễn Thị Yến, Lê Thị Nết',
         demoUrl: 'https://www.google.com/search?q=https://sites.google.com/view/stemthcsnguyenbinhkhiem/n%25E1%25BA%25A5m-b%25C3%25A%C3%A0o-ng%25C6%25B0-t%25C3%25A%C3%A1i-sinh'
     },
@@ -96,7 +96,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Hệ thống chăm sóc cây tự động sử dụng công nghệ cảm biến.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=800&auto=format&fit=crop', // Smart garden
+        imageUrl:  "/06.png", // Smart garden
         authors: 'Hoàng Thị Sương',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/v%C6%B0%E1%BB%9Dn-th%C3%B4ng-minh'
     },
@@ -107,7 +107,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Hộp bút tích hợp các tính năng công nghệ hỗ trợ học tập.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1516962215378-7fa2e137ae91?q=80&w=800&auto=format&fit=crop', // Stationary
+        imageUrl:  "/07.png", // Stationary
         authors: 'Hoàng Thị Sương',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%99p-b%C3%BAt-th%C3%B4ng-minh'
     },
@@ -118,7 +118,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Hệ thống cảnh báo sớm thiên tai giúp giảm thiểu thiệt hại.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1454789476662-bdd716092aac?q=80&w=800&auto=format&fit=crop', // Flood/Disaster
+        imageUrl:  "/08.png" // Flood/Disaster
         authors: 'Nguyễn Thị A Kim, Lê Thị Thanh Thương',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/m%C3%B4-h%C3%ACnh-c%E1%BA%A3nh-b%C3%A1o-l%C5%A9-v%C3%A0-s%E1%BA%A1t-l%E1%BB%9F-%C4%91%E1%BA%A5t'
     },
@@ -129,7 +129,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Bảng trắc nghiệm Tiếng Anh thông minh tích hợp AI.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop', // Smart board
+        imageUrl:  "/09.png", // Smart board
         authors: 'Phạm Kiều Oanh, Dương Thị Mỹ Lệ',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/testing-smart-board-b%E1%BA%A3ng-tr%E1%BA%AFc-nghi%E1%BB%87m-ti%E1%BA%BFng-anh-th%C3%B4ng-minh-t%C3%ADch-h%E1%BB%A3p-ai'
     },
@@ -140,7 +140,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Website thư viện học liệu số và tương tác liên môn.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1507842217121-ad0773cf4a0f?q=80&w=800&auto=format&fit=crop', // Library
+        imageUrl:  "/10.png", // Library
         authors: 'Huỳnh Quốc Khánh',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/website-th%C6%B0-vi%E1%BB%87n-h%E1%BB%8Dc-li%E1%BB%87u-s%E1%BB%91-v%C3%A0-t%C6%B0%C6%A1ng-t%C3%A1c-li%C3%AAn-m%C3%B4n'
     },
@@ -151,7 +151,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Ứng dụng xử lý hình ảnh và máy chiếu để chuyển bảng thường thành bảng tương tác thông minh.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop', // Vision
+        imageUrl:  "/11.png", // Vision
         authors: 'Trịnh Hoàng Sơn',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/vision-control-%E1%BB%A9ng-d%E1%BB%A5ng-x%E1%BB%AD-l%C3%BD-h%C3%ACnh-%E1%BA%A3nh-v%C3%A0-m%C3%A1y-chi%E1%BA%BFu-%C4%91%E1%BB%83-chuy%E1%BB%83n-b%E1%BA%A3ng-th%C6%B0%E1%BB%9Dng'
     },
@@ -162,7 +162,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Mô hình công viên tích hợp các kiến thức toán học trực quan.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop', // Math park
+        imageUrl:  "/12.png", // Math park
         authors: 'Nguyễn Thị Vân',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/c%C3%B4ng-vi%C3%AAn-to%C3%A1n-h%E1%BB%8Dc'
     },
@@ -173,7 +173,7 @@ export const PROJECTS: Project[] = [
         group: 'STEM',
         description: 'Vẽ hoa văn toán học Spirograph – Nghệ thuật từ chuyển động đều.',
         coverImage: STEM_COVER_IMAGE,
-        imageUrl: 'https://images.unsplash.com/photo-1596443686812-2f45229eebc3?q=80&w=800&auto=format&fit=crop', // Spiral art
+        imageUrl:  "/13.png", // Spiral art
         authors: 'Trần Thiên Ân, Nguyễn Đức Khôi',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/spiralart-v%E1%BA%BD-hoa-v%C4%83n-to%C3%A1n-h%E1%BB%8Dc-spirograph-ngh%E1%BB%87-thu%E1%BA%ADt-t%E1%BB%AB-chuy%E1%BB%83n-%C4%91%E1%BB%99ng-%C4%91%E1%BB%81u'
     },
@@ -185,7 +185,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Học liệu số hỗ trợ dạy học thông qua video hoạt hình.',
         coverImage: "/cover14.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1626785774573-4b79931434f3?q=80&w=800&auto=format&fit=crop', // Animation
+        imageUrl: "/cover14.avif", 
         authors: 'Võ Thị Thu Bình',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-ai-%C4%91%E1%BB%83-t%E1%BA%A1o-video-ho%E1%BA%A1t-h%C3%ACnh'
     },
@@ -196,7 +196,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Cá nhân hóa học tập thông qua bảo tàng số tương tác.',
         coverImage: "/cover15.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1518932945647-7a1c969f8be2?q=80&w=800&auto=format&fit=crop', // Museum
+        imageUrl: "/cover15.avif", // Museum
         authors: 'Trần Thiên Ân',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/b%E1%BA%A3o-t%C3%A0ng-s%E1%BB%91-tri%E1%BB%83n-l%C3%A3m-to%C3%A1n-h%E1%BB%8Dc'
     },
@@ -207,7 +207,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Thiết kế bài giảng học liệu số môn Ngữ Văn sử dụng các công cụ AI.',
         coverImage: "/cover16.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=800&auto=format&fit=crop', // Books
+        imageUrl: "/cover16.avif", // Books
         authors: 'Nguyễn Thị Diệu Hiền',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-%C4%91%E1%BB%83-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-ng%E1%BB%AF-v%C4%83n-6'
     },
@@ -218,7 +218,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Thiết kế bài giảng điện tử sinh động với sự hỗ trợ của AI Voice.',
         coverImage: "/cover17.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?q=80&w=800&auto=format&fit=crop', // Sound wave
+        imageUrl: "/cover17.avif", // Sound wave
         authors: 'Nguyễn Thị Như Ngọc',
         demoUrl: 'https://www.google.com/search?q=https://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%25E1%25BA%25BFt-k%25E1%25BA%25BF-b%25C3%25A0i-gi%25E1%25BA%25A3ng-c%25C3%25B3-gi%25E1%25BB%258Dng-n%25C3%25B3i-ai-v%25C3%25A0-video-sinh-%25C4%2591i%25E1%25BB%2599ng'
     },
@@ -229,7 +229,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Học liệu số và xây dựng công cụ kiểm tra đánh giá môn Toán.',
         coverImage: "/cover18.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop', // Math game
+        imageUrl: "/cover18.avif", // Math game
         authors: 'Nguyễn Phước Diễm',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%E1%BA%BFt-k%E1%BA%BF-tr%C3%B2-ch%C6%A1i-to%C3%A1n-h%E1%BB%8Dc-b%E1%BA%B1ng-canva-ai-v%C3%A0-chatgpt'
     },
@@ -240,7 +240,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Hệ thống quản lí lớp học và thống kê kết quả học tập thông minh.',
         coverImage: "/cover19.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop', // Analytics
+        imageUrl: "/cover19.avif", // Analytics
         authors: 'Phạm Tường Vy',
         demoUrl: 'http://sites.google.com/view/stemthcsnguyenbinhkhiem/thi%E1%BA%BFt-k%E1%BA%BF-h%E1%BB%87-th%E1%BB%91ng-ph%C3%A2n-t%C3%ADch-h%E1%BB%8Dc-l%E1%BB%B1c-b%E1%BA%B1ng-ai'
     },
@@ -251,7 +251,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Trợ lý học tập thông minh cho học sinh môn Tiếng Anh.',
         coverImage: "/cover20.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=800&auto=format&fit=crop', // English learning
+        imageUrl: "/cover20.avif", // English learning
         authors: 'Lê Thanh Nghi',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-notebooklm-trong-m%C3%B4n-ti%E1%BA%BFng-anh'
     },
@@ -262,7 +262,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Bài nói và nghe: Kể lại một truyện cổ tích với sự hỗ trợ của AI.',
         coverImage: "/cover21.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=800&auto=format&fit=crop', // Story book
+        imageUrl: "/cover21.avif", // Story book
         authors: 'Nguyễn Phạm Minh Nguyệt',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/h%E1%BB%8Dc-k%E1%BB%83-truy%E1%BB%87n-c%C3%B9ng-ai-b%C3%A0i-n%C3%B3i-v%C3%A0-nghe-k%E1%BB%83-l%E1%BA%A1i-m%E1%BB%99t-truy%E1%BB%87n-c%E1%BB%95-t%C3%ADch'
     },
@@ -273,7 +273,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Xây dựng và thiết kế bài giảng điện tử hiện đại.',
         coverImage: "/cover22.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop', // Digital code
+        imageUrl: "/cover22.avif", // Digital code
         authors: 'Dương Thị Mỹ Lệ',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-trong-x%C3%A2y-d%E1%BB%B1ng-v%C3%A0-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-%C4%91i%E1%BB%87n-t%E1%BB%AD'
     },
@@ -284,7 +284,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Trợ lý học tập cho học sinh trong môn Hóa học.',
         coverImage: "/cover23.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=800&auto=format&fit=crop', // Chemistry
+        imageUrl: "/cover23.avif", // Chemistry
         authors: 'Huỳnh Quốc Khánh',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/periclick-b%E1%BA%A3ng-h%E1%BB%87-th%E1%BB%91ng-tu%E1%BA%A7n-ho%C3%A0n-t%C6%B0%C6%A1ng-t%C3%A1c'
     },
@@ -295,7 +295,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Công cụ phân tích đánh giá, cá nhân hóa lộ trình học tập cho học sinh.',
         coverImage: "/cover24.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop', // Chart
+        imageUrl: "/cover24.avif", // Chart
         authors: 'Nguyễn Đông Nam, Nguyễn Trung',
         demoUrl: 'https://script.google.com/macros/s/AKfycbzqBr83WXuI_dpgbktFNOreNywO4VSpDxOwhQDQVeu6SJc7uKN6xo2RDYpLPw16-1A4/exec'
     },
@@ -306,7 +306,7 @@ export const PROJECTS: Project[] = [
         group: 'AI',
         description: 'Ứng dụng các công cụ AI trong thiết kế bài giảng điện tử Hóa học.',
         coverImage: "/cover25.avif",
-        imageUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=800&auto=format&fit=crop', // Chemical structure
+        imageUrl: "/cover25.avif", // Chemical structure
         authors: 'Hoàng Thị Lệ Thủy',
         demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/%E1%BB%A9ng-d%E1%BB%A5ng-c%C3%A1c-c%C3%B4ng-c%E1%BB%A5-ai-trong-thi%E1%BA%BFt-k%E1%BA%BF-b%C3%A0i-gi%E1%BA%A3ng-%C4%91i%E1%BB%87n-t%E1%BB%AD-b%C3%A0i-26-ethylic-a'
     }
