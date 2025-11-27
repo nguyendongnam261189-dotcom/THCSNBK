@@ -1,27 +1,38 @@
-import { GoogleGenAI } from "@google/genai";
-import { FESTIVAL_CONTEXT, PROJECTS, SCHEDULE } from '../constants';
+// src/services/geminiService.ts
 
-const apiKey = process.env.API_KEY || '';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FESTIVAL_CONTEXT, PROJECTS, SCHEDULE } from "../constants";
 
-// Safely initialize the AI client
-let ai: GoogleGenAI | null = null;
+// Lấy API key từ biến môi trường Vite
+// Trên Vercel / file .env: đặt VITE_GEMINI_API_KEY=...
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+
+// Chuẩn bị biến model (nếu không có key thì để null, tránh crash)
+let model: ReturnType<GoogleGenerativeAI["getGenerativeModel"]> | null = null;
+
 if (apiKey) {
-    ai = new GoogleGenAI({ apiKey });
+  const genAI = new GoogleGenerativeAI(apiKey);
+  // Bạn có thể đổi model nếu muốn, ví dụ "gemini-2.0-flash"
+  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 } else {
-    console.warn("API_KEY is missing. AI features will not work.");
+  if (import.meta.env.DEV) {
+    console.warn("VITE_GEMINI_API_KEY is missing. AI features will not work.");
+  }
 }
 
-// Construct a rich system instruction with dynamic data
-const buildSystemInstruction = () => {
-    const projectData = PROJECTS.map(p => 
-        `- Sản phẩm: "${p.title}" (Lĩnh vực: ${p.category}). Tác giả: ${p.authors}. Mô tả: ${p.description}`
-    ).join('\n');
+// Tạo system prompt từ dữ liệu FESTIVAL_CONTEXT, PROJECTS, SCHEDULE
+const buildSystemInstruction = (): string => {
+  const projectData = PROJECTS.map(
+    (p) =>
+      `- Sản phẩm: "${p.title}" (Lĩnh vực: ${p.category}). Tác giả: ${p.authors}. Mô tả: ${p.description}`
+  ).join("\n");
 
-    const scheduleData = SCHEDULE.map(s => 
-        `- Thời gian: ${s.time}. Sự kiện: "${s.title}" tại ${s.location}. Chi tiết: ${s.description}`
-    ).join('\n');
+  const scheduleData = SCHEDULE.map(
+    (s) =>
+      `- Thời gian: ${s.time}. Sự kiện: "${s.title}" tại ${s.location}. Chi tiết: ${s.description}`
+  ).join("\n");
 
-    return `${FESTIVAL_CONTEXT}
+  return `${FESTIVAL_CONTEXT}
 
 DƯỚI ĐÂY LÀ DỮ LIỆU CHI TIẾT VỀ GIAN HÀNG TRƯỜNG NGUYỄN BỈNH KHIÊM:
 
@@ -39,24 +50,27 @@ LƯU Ý KHI TRẢ LỜI:
 `;
 };
 
+// Hàm dùng trong App.tsx để gọi AI
 export const generateResponse = async (userMessage: string): Promise<string> => {
-    if (!ai) {
-        return "Xin lỗi, tôi chưa được kết nối với hệ thống AI (Thiếu API Key).";
-    }
+  if (!model) {
+    return "Xin lỗi, tôi chưa được kết nối với hệ thống AI (thiếu API Key). Vui lòng báo với thầy/cô phụ trách gian hàng kiểm tra cấu hình.";
+  }
 
-    try {
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: userMessage,
-            config: {
-                systemInstruction: buildSystemInstruction(),
-                temperature: 0.5, // Lower temperature for more accurate factual responses
-            }
-        });
+  try {
+    // Gộp system instruction + câu hỏi của khách vào một prompt
+    const prompt = `${buildSystemInstruction()}
 
-        return response.text || "Xin lỗi, tôi không thể trả lời câu hỏi này lúc này.";
-    } catch (error) {
-        console.error("Gemini API Error:", error);
-        return "Đã xảy ra lỗi khi kết nối với máy chủ AI. Vui lòng thử lại.";
-    }
+CÂU HỎI CỦA KHÁCH THAM QUAN:
+${userMessage}
+`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    return text?.trim() || "Xin lỗi, tôi không thể trả lời câu hỏi này lúc này.";
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    return "Đã xảy ra lỗi khi kết nối với máy chủ AI. Vui lòng thử lại sau hoặc hỏi trực tiếp thầy cô tại gian hàng.";
+  }
 };
