@@ -10,7 +10,8 @@ import {
   Maximize, Minimize, BrainCircuit, Box, Home
 } from 'lucide-react';
 
-const IDLE_TIMEOUT_MS = 30000; // 30 giây không tương tác sẽ kích hoạt Screensaver
+// Thời gian chờ: 30000ms = 30 giây
+const IDLE_TIMEOUT_MS = 30000; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
@@ -34,30 +35,25 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Fullscreen State
+  // Fullscreen State (App)
   const [isFullscreen, setIsFullscreen] = useState(false);
   
-  // Video Fullscreen State (About section)
+  // Fullscreen State (Video Giới thiệu)
   const [isAboutVideoFullscreen, setIsAboutVideoFullscreen] = useState(false);
 
-  // --- SCREENSAVER LOGIC (QUAN TRỌNG) ---
+  // --- LOGIC MÀN HÌNH CHỜ (SCREENSAVER) ---
   const [isIdle, setIsIdle] = useState(true); // Mặc định vào là hiện video ngay
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetIdleTimer = () => {
-    // Nếu đang ở chế độ nghỉ (video đang chạy) mà chạm vào -> Tắt nghỉ
-    if (isIdle) {
-      setIsIdle(false);
-    }
-
     // Xóa bộ đếm cũ
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
     }
 
-    // Thiết lập bộ đếm mới 30s
+    // Thiết lập bộ đếm mới
     idleTimerRef.current = setTimeout(() => {
-      console.log("Không có tương tác, kích hoạt Screensaver...");
+      console.log("Hết thời gian chờ, kích hoạt Screensaver...");
       
       // 1. Reset về màn hình chính
       setCurrentView(AppView.HOME);
@@ -72,16 +68,27 @@ const App: React.FC = () => {
     }, IDLE_TIMEOUT_MS);
   };
 
+  // Hàm đánh thức màn hình khi đang ở chế độ chờ
+  const wakeUp = () => {
+    setIsIdle(false);
+    resetIdleTimer();
+  };
+
   // Cài đặt bộ lắng nghe sự kiện toàn trang
   useEffect(() => {
-    // Danh sách các hành động được coi là "người dùng đang tương tác"
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
     
-    // Khởi chạy timer lần đầu
-    resetIdleTimer();
+    // Nếu KHÔNG phải đang nghỉ (đang dùng), thì mới kích hoạt bộ đếm lại
+    if (!isIdle) {
+      resetIdleTimer();
+    }
 
     const handleActivity = () => {
-      resetIdleTimer();
+      // Chỉ reset timer khi người dùng đang thao tác bình thường
+      // Nếu đang isIdle=true, ta không làm gì ở đây cả (để hàm wakeUp ở div video xử lý)
+      if (!isIdle) {
+        resetIdleTimer();
+      }
     };
 
     events.forEach(event => {
@@ -94,7 +101,7 @@ const App: React.FC = () => {
         document.removeEventListener(event, handleActivity);
       });
     };
-  }, [isIdle]); // Re-bind khi trạng thái idle thay đổi
+  }, [isIdle]); // Quan trọng: useEffect này phụ thuộc vào biến isIdle
 
   // Auto-scroll chat
   useEffect(() => {
@@ -135,19 +142,18 @@ const App: React.FC = () => {
   // --- RENDERS ---
 
   // 1. MÀN HÌNH CHỜ (SCREENSAVER)
-  // Logic: Nằm đè lên tất cả (z-index cực cao), click vào thì biến mất
   if (isIdle) {
     return (
       <div 
         className="fixed inset-0 z-[100000] bg-black flex flex-col items-center justify-center cursor-pointer animate-in fade-in duration-1000"
-        onClick={resetIdleTimer} 
+        onClick={wakeUp} // Chạm vào bất cứ đâu để đánh thức
       >
         <video
           src="/intro.mp4"
           className="absolute inset-0 w-full h-full object-cover"
           autoPlay
           loop
-          muted // Quan trọng: Muted để trình duyệt cho phép tự chạy
+          muted 
           playsInline
         />
         <div className="absolute inset-0 bg-black/30" /> 
@@ -452,7 +458,7 @@ const App: React.FC = () => {
         {currentView === AppView.ABOUT && renderAbout()}
       </main>
 
-      {/* --- MỚI: PHẦN HIỂN THỊ VIDEO GIỚI THIỆU TOÀN MÀN HÌNH --- */}
+      {/* --- PHẦN MỚI THÊM VÀO: Lớp phủ Video Giới thiệu Toàn màn hình --- */}
       {isAboutVideoFullscreen && (
         <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center animate-in fade-in duration-300">
           <button onClick={() => setIsAboutVideoFullscreen(false)} className="absolute top-6 right-6 z-[10000] p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all border border-white/20" title="Đóng">
