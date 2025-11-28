@@ -9,16 +9,14 @@ import {
   Send, Bot, Clock, MapPin, X, Award, ChevronRight, AlertCircle, ExternalLink,
   Maximize, Minimize, BrainCircuit, Box, Home, Fingerprint, Scan, Smartphone, Wifi,
   ShieldCheck, Cpu, Activity, Lock, Unlock, CheckCircle, Volume2, VolumeX, Keyboard as KeyboardIcon,
-  MessageSquareHeart, Trash2, PenTool, Sparkles, Mic, MicOff
+  MessageSquareHeart, Trash2, PenTool, Sparkles, Mic, MicOff, Download, Upload
 } from 'lucide-react';
 
-// Thư viện bàn phím ảo
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
 const IDLE_TIMEOUT_MS = 30000; 
 
-// --- TYPE DEFINITION ---
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -34,7 +32,6 @@ interface GuestEntry {
   timestamp: string;
 }
 
-// --- HÀM XỬ LÝ GÕ TIẾNG VIỆT (TELEX) ---
 const toVietnamese = (str: string) => {
   let result = str;
   result = result.replace(/aa/g, "â").replace(/AA/g, "Â");
@@ -80,7 +77,6 @@ const App: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string>('All');
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
   
-  // Chat & Keyboard State
   const [input, setInput] = useState('');
   const [showKeyboard, setShowKeyboard] = useState(false); 
   
@@ -97,7 +93,6 @@ const App: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAboutVideoFullscreen, setIsAboutVideoFullscreen] = useState(false);
 
-  // Trạng thái hệ thống
   const [isIdle, setIsIdle] = useState(true); 
   const [isUnlocking, setIsUnlocking] = useState(false); 
   const [isSuccess, setIsSuccess] = useState(false);
@@ -116,6 +111,7 @@ const App: React.FC = () => {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref cho nút upload file
 
   // --- 1. LOGIC SỔ LƯU BÚT ---
   useEffect(() => {
@@ -134,6 +130,40 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('digital_guestbook_data', JSON.stringify(guestEntries));
   }, [guestEntries]);
+
+  // --- TÍNH NĂNG EXPORT / IMPORT DATA ---
+  const handleExportData = () => {
+    const dataStr = JSON.stringify(guestEntries, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'luu-but-nbk.json';
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
+  const handleImportData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+    if (event.target.files && event.target.files[0]) {
+        fileReader.readAsText(event.target.files[0], "UTF-8");
+        fileReader.onload = (e) => {
+            if (e.target?.result) {
+                try {
+                    const parsedData = JSON.parse(e.target.result as string);
+                    if (Array.isArray(parsedData)) {
+                        setGuestEntries(parsedData);
+                        alert("Đã khôi phục dữ liệu lưu bút thành công!");
+                    } else {
+                        alert("File không hợp lệ!");
+                    }
+                } catch (error) {
+                    alert("Lỗi đọc file!");
+                }
+            }
+        };
+    }
+  };
 
   const handleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -186,7 +216,7 @@ const App: React.FC = () => {
     if (adminClickCount + 1 >= 5) {
       setIsAdminMode(!isAdminMode);
       setAdminClickCount(0);
-      alert(isAdminMode ? "Đã TẮT chế độ Admin" : "Đã BẬT chế độ Admin");
+      alert(isAdminMode ? "Đã BẬT chế độ Admin (Hiện nút Sao lưu/Khôi phục)" : "Đã TẮT chế độ Admin");
     }
   };
 
@@ -224,10 +254,9 @@ const App: React.FC = () => {
     });
   };
 
-  // --- 3. BỘ ĐẾM GIỜ & SỰ KIỆN ---
+  // --- 3. BỘ ĐẾM GIỜ ---
   const resetIdleTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    // Không đếm khi đang: Chờ, Mở khóa, Xem Iframe, Hiện bàn phím, Mở sổ lưu bút
     if (!isIdle && !isUnlocking && !isSuccess && !iframeUrl && !showKeyboard && !isGuestbookOpen) {
       timerRef.current = setTimeout(() => {
         console.log("--> Timeout. Screensaver.");
@@ -282,7 +311,7 @@ const App: React.FC = () => {
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch((err) => console.error(err));
     } else {
       if (document.exitFullscreen) document.exitFullscreen();
     }
@@ -308,7 +337,7 @@ const App: React.FC = () => {
     return url.includes('sites.google.com') || url.includes('canva.com') || url.includes('drive.google.com');
   };
 
-  // --- RENDERS (FULL) ---
+  // --- RENDERS ---
 
   if (isIdle) {
     return (
@@ -353,15 +382,15 @@ const App: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center animate-in fade-in zoom-in duration-1000 relative">
       <div className="mb-2 inline-flex items-center justify-center p-3 rounded-full bg-primary/20 border border-primary/50 animate-bounce"><span className="text-primary font-bold tracking-widest uppercase text-sm">Ngày Hội Chuyển Đổi Số 2025</span></div>
       
-      {/* --- SỔ LƯU BÚT ĐÃ SỬA LỖI --- */}
+      {/* MARQUEE SỔ LƯU BÚT ĐÃ SỬA GIAO DIỆN */}
       <div className="w-full max-w-4xl mb-4 relative h-12 bg-white/5 rounded-full border border-white/10 flex items-center overflow-hidden">
-         {/* KHỐI TIÊU ĐỀ CỐ ĐỊNH (Z-INDEX CAO + MÀU NỀN) */}
-         <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center px-6 bg-gradient-to-r from-slate-900 to-slate-900/90 text-accent font-bold uppercase tracking-wider border-r border-white/10 shadow-xl">
-            <MessageSquareHeart size={20} className="mr-2" /> Lưu bút
+         {/* KHỐI TIÊU ĐỀ: CỐ ĐỊNH, NỀN ĐẬM ĐỂ KHÔNG BỊ CHỮ ĐÈ LÊN */}
+         <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center px-6 bg-slate-900 border-r border-white/20 shadow-[5px_0_20px_rgba(0,0,0,0.8)]">
+            <MessageSquareHeart size={20} className="mr-2 text-pink-500 animate-pulse" /> 
+            <span className="text-white font-bold uppercase tracking-wider text-sm">Lưu bút</span>
          </div>
          
-         {/* DÒNG CHỮ CHẠY */}
-         <div className="flex items-center animate-marquee whitespace-nowrap pl-40"> {/* pl-40 để chữ bắt đầu sau khối tiêu đề */}
+         <div className="flex items-center animate-marquee whitespace-nowrap pl-40"> 
             {guestEntries.map(entry => (
                <div key={entry.id} className="flex items-center gap-2 text-white/80 mx-8">
                   <span className="text-2xl">{entry.emoji}</span>
@@ -370,7 +399,6 @@ const App: React.FC = () => {
                   <span className="text-xs text-white/30 ml-1">({entry.timestamp})</span>
                </div>
             ))}
-            {/* Lặp lại để chạy mượt */}
             {guestEntries.map(entry => (
                <div key={`dup-${entry.id}`} className="flex items-center gap-2 text-white/80 mx-8">
                   <span className="text-2xl">{entry.emoji}</span>
@@ -402,9 +430,26 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
            <div className="bg-slate-900 border border-white/20 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
               <div className="p-6 border-b border-white/10 bg-white/5 select-none cursor-pointer active:scale-95 transition-transform" onClick={handleTitleClick}>
-                 <h3 className="text-2xl font-bold text-white flex items-center gap-3"><MessageSquareHeart className="text-pink-500" /> Sổ Lưu Bút Điện Tử {isAdminMode && <span className="text-xs bg-red-500 text-white px-2 py-1 rounded">ADMIN MODE</span>}</h3>
+                 <h3 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <MessageSquareHeart className="text-pink-500" /> Sổ Lưu Bút Điện Tử
+                    {isAdminMode && <span className="text-xs bg-red-500 text-white px-2 py-1 rounded">ADMIN MODE</span>}
+                 </h3>
                  <p className="text-white/50 text-sm mt-1">Chia sẻ cảm nghĩ của bạn về gian hàng nhé!</p>
               </div>
+
+              {/* NÚT EXPORT / IMPORT CHỈ HIỆN KHI Ở ADMIN MODE */}
+              {isAdminMode && (
+                  <div className="flex gap-2 px-6 pt-4">
+                      <button onClick={handleExportData} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-lg text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors">
+                          <Download size={14} /> Sao lưu
+                      </button>
+                      <label className="flex items-center gap-2 px-3 py-1.5 bg-green-600/20 text-green-400 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition-colors cursor-pointer">
+                          <Upload size={14} /> Khôi phục
+                          <input type="file" ref={fileInputRef} onChange={handleImportData} className="hidden" accept=".json" />
+                      </label>
+                  </div>
+              )}
+
               <div className="p-6 overflow-y-auto flex-1 space-y-4">
                  <div className="space-y-4 mb-8 bg-white/5 p-4 rounded-xl border border-white/5">
                     <div><label className="text-xs text-white/50 uppercase font-bold mb-1 block">Tên của bạn</label><input type="text" value={newGuestName} onChange={(e) => setNewGuestName(e.target.value)} placeholder="Nhập tên..." className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:border-pink-500 outline-none" /></div>
@@ -421,6 +466,9 @@ const App: React.FC = () => {
     </div>
   );
   
+  // ... (Giữ nguyên renderGallery, renderSchedule, renderAIGuide, renderAbout và return)
+  // ĐỂ CHẮC CHẮN, TÔI PASTE LẠI CÁC HÀM CÒN LẠI DƯỚI ĐÂY:
+
   const renderGallery = () => {
     let categories: string[] = ['All'];
     if (selectedGroup === 'STEM') { categories = ['All', 'Environment', 'Technology', 'IT', 'Math']; } else { categories = ['All', 'Technology', 'IT', 'Math', 'NaturalScience', 'SocialScience']; }
@@ -517,7 +565,7 @@ const App: React.FC = () => {
           <div className="flex-1 relative">
              <textarea
                 value={input}
-                onFocus={() => {}} // KHÔNG TỰ ĐỘNG HIỆN BÀN PHÍM NỮA
+                onFocus={() => {}}
                 onChange={(e) => {
                     const val = toVietnamese(e.target.value); 
                     setInput(val);
