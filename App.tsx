@@ -17,7 +17,6 @@ import 'react-simple-keyboard/build/css/index.css';
 
 const IDLE_TIMEOUT_MS = 30000; 
 
-// --- TYPE DEFINITION CHO SPEECH API (Để tránh lỗi đỏ TypeScript) ---
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -123,7 +122,8 @@ const App: React.FC = () => {
     } else {
       setGuestEntries([
         { id: 1, name: 'Thầy Hiệu Trưởng', message: 'Chúc ngày hội thành công rực rỡ!', emoji: '🎉', timestamp: '28/11' },
-        { id: 2, name: 'Học sinh lớp 9/1', message: 'Gian hàng trường mình xịn quá!', emoji: '😍', timestamp: '28/11' }
+        { id: 2, name: 'Học sinh lớp 9/1', message: 'Gian hàng trường mình xịn quá!', emoji: '😍', timestamp: '28/11' },
+        { id: 3, name: 'BTC', message: 'Chào mừng các em học sinh!', emoji: '🚀', timestamp: '28/11' }
       ]);
     }
   }, []);
@@ -132,9 +132,8 @@ const App: React.FC = () => {
     localStorage.setItem('digital_guestbook_data', JSON.stringify(guestEntries));
   }, [guestEntries]);
 
-  // --- XỬ LÝ GIỌNG NÓI (SPEECH TO TEXT) ---
+  // --- XỬ LÝ GIỌNG NÓI ---
   const handleVoiceInput = () => {
-    // Kiểm tra trình duyệt có hỗ trợ không
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Trình duyệt này không hỗ trợ nhận diện giọng nói. Vui lòng dùng Chrome hoặc Edge.");
@@ -142,34 +141,24 @@ const App: React.FC = () => {
     }
 
     if (isListening) {
-      // Nếu đang nghe thì dừng lại
       if (recognitionRef.current) recognitionRef.current.stop();
       setIsListening(false);
       return;
     }
 
-    // Bắt đầu nghe
     const recognition = new SpeechRecognition();
-    recognition.lang = 'vi-VN'; // Ngôn ngữ Tiếng Việt
-    recognition.interimResults = false; // Chỉ lấy kết quả cuối cùng
+    recognition.lang = 'vi-VN';
+    recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
+    recognition.onstart = () => setIsListening(true);
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      // Cộng dồn vào lời nhắn hiện tại
       setNewGuestMsg(prev => (prev ? prev + " " + transcript : transcript));
     };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
+    recognition.onend = () => setIsListening(false);
     recognition.onerror = (event: any) => {
-      console.error("Lỗi nhận diện giọng nói:", event.error);
+      console.error("Lỗi:", event.error);
       setIsListening(false);
     };
 
@@ -377,12 +366,12 @@ const App: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-full py-20 px-4 text-center animate-in fade-in zoom-in duration-1000 relative">
       <div className="mb-2 inline-flex items-center justify-center p-3 rounded-full bg-primary/20 border border-primary/50 animate-bounce"><span className="text-primary font-bold tracking-widest uppercase text-sm">Ngày Hội Chuyển Đổi Số 2025</span></div>
       
-      {/* MARQUEE SỔ LƯU BÚT */}
+      {/* MARQUEE SỔ LƯU BÚT (ĐÃ UPDATE class animate-marquee) */}
       <div className="w-full max-w-4xl mb-4 overflow-hidden relative h-10 bg-white/5 rounded-full border border-white/10 flex items-center">
          <div className="absolute left-4 z-10 flex items-center gap-2 text-accent font-bold text-sm uppercase tracking-wider bg-slate-900 pr-2">
             <MessageSquareHeart size={16} /> Lưu bút
          </div>
-         <div className="whitespace-nowrap animate-[marquee_20s_linear_infinite] flex gap-8 pl-32">
+         <div className="whitespace-nowrap animate-marquee flex gap-8 pl-32">
             {guestEntries.map(entry => (
                <div key={entry.id} className="flex items-center gap-2 text-white/80">
                   <span className="text-xl">{entry.emoji}</span>
