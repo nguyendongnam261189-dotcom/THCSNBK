@@ -95,7 +95,6 @@ const App: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAboutVideoFullscreen, setIsAboutVideoFullscreen] = useState(false);
 
-  // Trạng thái hệ thống
   const [isIdle, setIsIdle] = useState(true); 
   const [isUnlocking, setIsUnlocking] = useState(false); 
   const [isSuccess, setIsSuccess] = useState(false);
@@ -130,39 +129,22 @@ const App: React.FC = () => {
 
   // --- LOGIC LOAD/SAVE DATA ---
   useEffect(() => {
-    try {
-      const savedGuest = localStorage.getItem('digital_guestbook_data');
-      if (savedGuest) {
-        const parsedData = JSON.parse(savedGuest);
-        if (Array.isArray(parsedData)) setGuestEntries(parsedData);
-      } else {
-        setGuestEntries([
-          { id: 1, name: 'Thầy Hiệu Trưởng', message: 'Chúc ngày hội thành công rực rỡ!', emoji: '🎉', timestamp: '28/11' },
-          { id: 2, name: 'Học sinh 9/1', message: 'Gian hàng trường mình xịn quá!', emoji: '😍', timestamp: '28/11' },
-          { id: 3, name: 'BTC', message: 'Chào mừng các em học sinh!', emoji: '🚀', timestamp: '28/11' }
-        ]);
-      }
-    } catch (e) { localStorage.removeItem('digital_guestbook_data'); setGuestEntries([]); }
+    const savedGuest = localStorage.getItem('digital_guestbook_data');
+    if (savedGuest) setGuestEntries(JSON.parse(savedGuest));
     
-    try {
-      const savedPrizes = localStorage.getItem('lucky_wheel_prizes');
-      if (savedPrizes) {
-         const parsedPrizes = JSON.parse(savedPrizes);
-         if(Array.isArray(parsedPrizes)) setPrizes(parsedPrizes);
-      }
-    } catch(e) { localStorage.removeItem('lucky_wheel_prizes'); }
+    const savedPrizes = localStorage.getItem('lucky_wheel_prizes');
+    if (savedPrizes) setPrizes(JSON.parse(savedPrizes));
   }, []);
 
   useEffect(() => { localStorage.setItem('digital_guestbook_data', JSON.stringify(guestEntries)); }, [guestEntries]);
   useEffect(() => { localStorage.setItem('lucky_wheel_prizes', JSON.stringify(prizes)); }, [prizes]);
 
-  // --- LOGIC VÒNG QUAY (LOGIC CŨ ỔN ĐỊNH) ---
+  // --- LOGIC VÒNG QUAY ---
   const handleSpinWheel = () => {
     if (isSpinning) return;
     setWinner(null);
     setIsSpinning(true);
     
-    // Logic cũ: Quay góc ngẫu nhiên
     const newRotation = wheelRotation + 1800 + Math.floor(Math.random() * 360);
     setWheelRotation(newRotation);
 
@@ -191,7 +173,7 @@ const App: React.FC = () => {
 
   const handleClaimPrize = () => {
     setWinner(null);
-    setIsWheelOpen(false); 
+    setIsWheelOpen(false); // Đóng luôn vòng quay khi nhận thưởng
   };
 
   // --- CÁC LOGIC KHÁC ---
@@ -262,7 +244,6 @@ const App: React.FC = () => {
     });
   };
 
-  // --- BỘ ĐẾM GIỜ ---
   const resetIdleTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (!isIdle && !isUnlocking && !isSuccess && !iframeUrl && !showKeyboard && !isGuestbookOpen && !isWheelOpen) {
@@ -274,22 +255,11 @@ const App: React.FC = () => {
     }
   }, [isIdle, isUnlocking, isSuccess, iframeUrl, showKeyboard, isGuestbookOpen, isWheelOpen]);
 
-  // --- HÀM ĐÁNH THỨC (ĐÃ SỬA THỜI GIAN CÒN 1.5s) ---
   const wakeUp = () => {
     if (isUnlocking || isSuccess) return; 
     setIsIdle(false); setIsUnlocking(true); 
-    // 1.5s cho hiệu ứng quét
-    setTimeout(() => { 
-        setIsUnlocking(false); 
-        setIsSuccess(true); 
-        speakWelcome(); 
-    }, 1500);
-    
-    // 1.5s quét + 5s hiện thông báo = 6.5s
-    setTimeout(() => { 
-        setIsSuccess(false); 
-        resetIdleTimer(); 
-    }, 6500);
+    setTimeout(() => { setIsUnlocking(false); setIsSuccess(true); speakWelcome(); }, 1500);
+    setTimeout(() => { setIsSuccess(false); resetIdleTimer(); }, 7500);
   };
 
   useEffect(() => {
@@ -337,8 +307,8 @@ const App: React.FC = () => {
       <div className="w-full max-w-4xl mb-4 relative h-12 bg-white/5 rounded-full border border-white/10 flex items-center overflow-hidden">
          <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center px-6 bg-slate-900 border-r border-white/20 shadow-[5px_0_20px_rgba(0,0,0,0.8)]"><MessageSquareHeart size={20} className="mr-2 text-pink-500 animate-pulse" /> <span className="text-white font-bold uppercase tracking-wider text-sm">Lưu bút</span></div>
          <div className="flex items-center animate-marquee whitespace-nowrap pl-40"> 
-            {Array.isArray(guestEntries) && guestEntries.map(entry => (<div key={entry.id} className="flex items-center gap-2 text-white/80 mx-8"><span className="text-2xl">{entry.emoji}</span><span className="font-bold text-primary text-lg">{entry.name}:</span><span className="text-lg">"{entry.message}"</span><span className="text-xs text-white/30 ml-1">({entry.timestamp})</span></div>))}
-            {Array.isArray(guestEntries) && guestEntries.map(entry => (<div key={`dup-${entry.id}`} className="flex items-center gap-2 text-white/80 mx-8"><span className="text-2xl">{entry.emoji}</span><span className="font-bold text-primary text-lg">{entry.name}:</span><span className="text-lg">"{entry.message}"</span><span className="text-xs text-white/30 ml-1">({entry.timestamp})</span></div>))}
+            {guestEntries.map(entry => (<div key={entry.id} className="flex items-center gap-2 text-white/80 mx-8"><span className="text-2xl">{entry.emoji}</span><span className="font-bold text-primary text-lg">{entry.name}:</span><span className="text-lg">"{entry.message}"</span><span className="text-xs text-white/30 ml-1">({entry.timestamp})</span></div>))}
+            {guestEntries.map(entry => (<div key={`dup-${entry.id}`} className="flex items-center gap-2 text-white/80 mx-8"><span className="text-2xl">{entry.emoji}</span><span className="font-bold text-primary text-lg">{entry.name}:</span><span className="text-lg">"{entry.message}"</span><span className="text-xs text-white/30 ml-1">({entry.timestamp})</span></div>))}
          </div>
       </div>
 
@@ -372,10 +342,216 @@ const App: React.FC = () => {
                     <div><label className="text-xs text-white/50 uppercase font-bold mb-2 block">Cảm xúc</label><div className="flex gap-2">{['❤️', '😍', '👍', '🔥', '🎉', '🚀', '⭐', '🍀'].map(emoji => (<button key={emoji} onClick={() => setNewGuestEmoji(emoji)} className={`w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all ${newGuestEmoji === emoji ? 'bg-pink-500 scale-110 shadow-lg' : 'bg-white/10 hover:bg-white/20'}`}>{emoji}</button>))}</div></div>
                     <button onClick={handleAddGuestEntry} disabled={!newGuestName.trim() || !newGuestMsg.trim()} className="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl font-bold text-white shadow-lg hover:shadow-pink-500/20 disabled:opacity-50 disabled:cursor-not-allowed mt-2">Gửi Lời Chúc</button>
                  </div>
-                 <div className="space-y-3"><h4 className="text-white font-bold mb-2">Lời chúc gần đây</h4>{Array.isArray(guestEntries) && guestEntries.map(entry => (<div key={entry.id} className="bg-white/5 border border-white/5 p-4 rounded-xl flex gap-4 group hover:bg-white/10 transition-colors"><div className="text-3xl pt-1">{entry.emoji}</div><div className="flex-1"><div className="flex justify-between items-start"><h5 className="font-bold text-pink-400">{entry.name}</h5><span className="text-xs text-white/30">{entry.timestamp}</span></div><p className="text-white/80 mt-1">{entry.message}</p></div>{isAdminMode && (<button onClick={() => handleDeleteEntry(entry.id)} className="p-2 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors h-fit self-center"><Trash2 size={18} /></button>)}</div>))}</div>
+                 <div className="space-y-3"><h4 className="text-white font-bold mb-2">Lời chúc gần đây</h4>{guestEntries.map(entry => (<div key={entry.id} className="bg-white/5 border border-white/5 p-4 rounded-xl flex gap-4 group hover:bg-white/10 transition-colors"><div className="text-3xl pt-1">{entry.emoji}</div><div className="flex-1"><div className="flex justify-between items-start"><h5 className="font-bold text-pink-400">{entry.name}</h5><span className="text-xs text-white/30">{entry.timestamp}</span></div><p className="text-white/80 mt-1">{entry.message}</p></div>{isAdminMode && (<button onClick={() => handleDeleteEntry(entry.id)} className="p-2 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors h-fit self-center"><Trash2 size={18} /></button>)}</div>))}</div>
               </div>
               <button onClick={() => setIsGuestbookOpen(false)} className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"><X size={20} /></button>
            </div>
+        </div>
+      )}
+    </div>
+  );
+  
+  // ... (Giữ nguyên các hàm renderGallery, renderSchedule, renderAIGuide, renderAbout, return)
+  // ĐỂ CHẮC CHẮN, TÔI PASTE LẠI CÁC HÀM CÒN LẠI DƯỚI ĐÂY:
+
+  const renderGallery = () => {
+    let categories: string[] = ['All'];
+    if (selectedGroup === 'STEM') { categories = ['All', 'Environment', 'Technology', 'IT', 'Math']; } else { categories = ['All', 'Technology', 'IT', 'Math', 'NaturalScience', 'SocialScience']; }
+    const filteredProjects = PROJECTS.filter((p) => { const matchGroup = p.group === selectedGroup; const matchCategory = filterCategory === 'All' || p.category === filterCategory; return matchGroup && matchCategory; });
+    const getCategoryLabel = (cat: string) => { switch (cat) { case 'All': return 'Tất cả'; case 'Environment': return 'Môi trường'; case 'Technology': return 'Công nghệ'; case 'IT': return 'Tin học'; case 'Math': return 'Toán học'; case 'NaturalScience': return 'KHTN'; case 'SocialScience': return 'KHXH'; default: return cat; } };
+    return (
+      <div className="w-full max-w-6xl mx-auto pt-20 pb-48 px-6 animate-in slide-in-from-right duration-500">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+          <div className="flex flex-col items-start gap-2"><h2 className="text-4xl font-bold text-white">Sản phẩm trưng bày</h2><p className="text-white/50 text-sm">Khám phá các mô hình sáng tạo và ứng dụng công nghệ</p></div>
+          <div className="flex bg-slate-800/80 p-1.5 rounded-xl border border-white/10">
+            <button onClick={() => { setSelectedGroup('STEM'); setFilterCategory('All'); }} className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-bold transition-all ${selectedGroup === 'STEM' ? 'bg-primary text-white shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}><Box size={18} /> Sản phẩm STEM</button>
+            <button onClick={() => { setSelectedGroup('AI'); setFilterCategory('All'); }} className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-bold transition-all ${selectedGroup === 'AI' ? 'bg-secondary text-white shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}><BrainCircuit size={18} /> Ứng dụng AI</button>
+          </div>
+        </div>
+        <div className="flex bg-white/5 rounded-xl p-1 backdrop-blur-md overflow-x-auto max-w-full mb-8 border border-white/5 no-scrollbar">
+          {categories.map((cat) => (<button key={cat} onClick={() => setFilterCategory(cat)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filterCategory === cat ? 'bg-white/20 text-white shadow-sm border border-white/10' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>{getCategoryLabel(cat)}</button>))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.length > 0 ? (filteredProjects.map((project) => (<ProjectCard key={project.id} project={project} onClick={() => setSelectedProject(project)} />))) : (<div className="col-span-full py-20 text-center text-white/30"><AlertCircle className="mx-auto mb-4 w-12 h-12 opacity-50" /><p>Không tìm thấy sản phẩm nào trong danh mục này.</p></div>)}
+        </div>
+        {selectedProject && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setSelectedProject(null)}>
+            <div className="bg-slate-900 border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+              <div className="w-full md:w-3/5 bg-black relative aspect-video md:aspect-auto"><img src={selectedProject.imageUrl} alt={selectedProject.title} className="w-full h-full object-cover" /></div>
+              <div className="w-full md:w-2/5 p-8 flex flex-col bg-slate-900 overflow-y-auto">
+                <div className="flex items-center justify-between mb-6"><span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${selectedProject.group === 'AI' ? 'bg-secondary/20 text-secondary' : 'bg-primary/20 text-primary'}`}>{getCategoryLabel(selectedProject.category)}</span><button onClick={() => setSelectedProject(null)} className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors"><X size={20} /></button></div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{selectedProject.title}</h2><p className="text-white/70 text-base leading-relaxed mb-6 flex-grow">{selectedProject.description}</p>
+                <div className="space-y-4 mt-auto"><div className="border-t border-white/10 pt-4"><p className="text-xs text-white/40 uppercase tracking-widest mb-1">Thực hiện bởi</p><p className="text-base text-white font-medium">{selectedProject.authors}</p></div>{selectedProject.demoUrl && (<button onClick={() => setIframeUrl(selectedProject.demoUrl!)} className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/25 hover:-translate-y-1"><ExternalLink size={20} /> Trải nghiệm sản phẩm</button>)}</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderSchedule = () => (<div className="w-full max-w-4xl mx-auto pt-20 pb-48 px-6 animate-in slide-in-from-right duration-500"><h2 className="text-4xl font-bold text-white mb-12 text-center">Lịch trình hoạt động</h2><div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/20 before:to-transparent">{SCHEDULE.map((item) => (<div key={item.id} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}><div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/20 bg-slate-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform"><Clock size={16} className={item.isHighlight ? 'text-accent' : 'text-white/50'} /></div><div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-2xl border ${item.isHighlight ? 'bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border-indigo-500/30' : 'bg-white/5 border-white/10'} backdrop-blur-sm shadow-xl transition-all duration-300 hover:-translate-y-1`}><div className="flex items-center justify-between mb-2"><time className="font-mono text-sm text-primary">{item.time}</time>{item.isHighlight && <span className="flex h-2 w-2 rounded-full bg-accent animate-pulse" />}</div><h3 className="text-xl font-bold text-white mb-2">{item.title}</h3><p className="text-white/60 text-sm mb-3">{item.description}</p><div className="flex items-center gap-2 text-xs text-white/40"><MapPin size={12} /> {item.location}</div></div></div>))}</div></div>);
+  const renderAbout = () => (<div className="w-full max-w-5xl mx-auto pt-20 pb-48 px-6 animate-in slide-in-from-right duration-500 flex flex-col md:flex-row gap-12 items-center"><div className="w-full md:w-1/2 relative group"><div className="relative aspect-video rounded-3xl border border-white/10 shadow-2xl bg-black flex items-center justify-center overflow-hidden"><video src="/intro.mp4" className="absolute inset-0 w-full h-full object-contain" controls playsInline /><button onClick={() => setIsAboutVideoFullscreen(true)} className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-sm border border-white/10 transition-all z-10 opacity-0 group-hover:opacity-100" title="Phóng to video"><Maximize size={20} /></button></div></div><div className="w-full md:w-1/2 space-y-8"><div><h2 className="text-4xl font-bold text-white mb-4">Kết quả thực hiện nhiệm vụ <br /><span className="text-primary text-2xl">Năm học 2024 - 2025</span></h2><p className="text-white/70 text-lg leading-relaxed">Năm học 2024-2025 khép lại, ghi dấu một chặng đường nỗ lực không ngừng của tập thể {SCHOOL_NAME}. Nhà trường đã đạt được nhiều thành tích xuất sắc trong công tác dạy và học, cũng như các hoạt động phong trào, chuyển đổi số và STEM.</p></div><div className="grid grid-cols-2 gap-4"><div className="bg-white/5 border border-white/10 p-5 rounded-2xl"><h4 className="text-3xl font-bold text-primary mb-1">34</h4><p className="text-white/40 text-sm">Giải HSG Thành phố</p></div><div className="bg-white/5 border border-white/10 p-5 rounded-2xl"><h4 className="text-3xl font-bold text-accent mb-1">44</h4><p className="text-white/40 text-sm">Giải HSG Cấp Quận</p></div></div><div className="flex gap-4"><button onClick={() => setCurrentView(AppView.GALLERY)} className="flex items-center gap-2 px-6 py-3 bg-white text-dark font-bold rounded-xl hover:bg-white/90 transition-colors">Xem sản phẩm <ChevronRight size={18} /></button><button onClick={() => setCurrentView(AppView.AI_GUIDE)} className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white font-medium rounded-xl hover:bg-white/20 transition-colors">Hỏi trợ lý AI</button></div></div></div>);
+
+  // --- RENDER CHAT AI VỚI BÀN PHÍM ẢO ---
+  const renderAIGuide = () => (
+    <div className="w-full max-w-3xl mx-auto pt-20 pb-48 px-6 h-full flex flex-col animate-in slide-in-from-bottom duration-500">
+      <div className="text-center mb-6 shrink-0">
+        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full mx-auto flex items-center justify-center mb-3 shadow-[0_0_40px_rgba(16,185,129,0.3)]"><Bot size={32} className="text-white" /></div>
+        <h2 className="text-2xl font-bold text-white">Trợ lý Ảo AI</h2><p className="text-white/50 text-sm">Hỏi tôi về lịch trình, sản phẩm hoặc thông tin về trường</p>
+      </div>
+      <div className="flex-1 min-h-0 bg-white/5 border border-white/10 rounded-3xl overflow-hidden flex flex-col backdrop-blur-sm mb-6 transition-all duration-300 relative">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 pb-24">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none shadow-md' : 'bg-white/10 text-white/90 rounded-tl-none border border-white/5'}`}>{msg.text}</div>
+            </div>
+          ))}
+          {isLoading && (<div className="flex justify-start"><div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none flex items-center gap-4 animate-in fade-in slide-in-from-left duration-300"><div className="relative w-8 h-8 flex items-center justify-center"><div className="absolute inset-0 border-2 border-emerald-500/30 rounded-full animate-[spin_3s_linear_infinite]" /><div className="absolute inset-1 border-2 border-t-emerald-400 rounded-full animate-spin" /><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" /></div><span className="text-emerald-400 text-xs font-mono animate-pulse uppercase tracking-wider">AI đang phân tích...</span></div></div>)}
+          <div ref={chatEndRef} />
+        </div>
+
+        {showKeyboard && (
+          <div className="absolute bottom-[80px] left-0 right-0 bg-slate-900 border-t border-white/20 p-2 z-50 animate-in slide-in-from-bottom duration-300 shadow-2xl">
+            <div className="simple-keyboard-theme-dark text-black"> 
+                <Keyboard
+                  keyboardRef={r => (keyboardRef.current = r)}
+                  onChange={onKeyboardChange}
+                  onKeyPress={onKeyPress}
+                  inputName="chatInput"
+                  layout={{
+                    default: [
+                      "1 2 3 4 5 6 7 8 9 0 - = {bksp}", 
+                      "q w e r t y u i o p [ ] \\",
+                      "a s d f g h j k l ; '",
+                      "{shift} z x c v b n m , . /",
+                      "{space} {enter}" 
+                    ],
+                    shift: [
+                      "! @ # $ % ^ & * ( ) _ + {bksp}",
+                      "Q W E R T Y U I O P { } |",
+                      "A S D F G H J K L : \"",
+                      "{shift} Z X C V B N M < > ?",
+                      "{space} {enter}"
+                    ]
+                  }}
+                  display={{
+                    "{bksp}": "⌫ Xóa",
+                    "{enter}": "↵ Xuống dòng", 
+                    "{shift}": "⇧ Shift",
+                    "{space}": "Dấu cách",
+                  }}
+                />
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleChatSubmit} className="p-4 bg-white/5 border-t border-white/10 flex gap-3 shrink-0 relative z-50">
+          <div className="flex-1 relative">
+             <textarea
+                value={input}
+                onFocus={() => {}}
+                onChange={(e) => {
+                    const val = toVietnamese(e.target.value); 
+                    setInput(val);
+                    if(keyboardRef.current) keyboardRef.current.setInput(val);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleChatSubmit();
+                  }
+                }}
+                placeholder="Nhập câu hỏi (gõ aa->â, dd->đ...)"
+                className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-primary/50 focus:bg-black/40 transition-all resize-none h-14 scrollbar-hide"
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowKeyboard(!showKeyboard)} 
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/50 hover:text-white bg-white/5 rounded-lg keyboard-toggle-btn"
+                title="Bật/Tắt bàn phím ảo"
+              >
+                <KeyboardIcon size={20} className={showKeyboard ? "text-primary" : ""} />
+              </button>
+          </div>
+          <button type="submit" disabled={isLoading || !input.trim()} className="bg-primary hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors flex items-center justify-center w-14 h-14"><Send size={24} /></button>
+        </form>
+      </div>
+      <div className="mt-2 flex flex-wrap justify-center gap-2 shrink-0">
+        {['Lịch thi đấu Robotic khi nào?', 'Danh sách sản phẩm STEM?', 'Giới thiệu trường'].map(suggestion => (
+          <button key={suggestion} onClick={() => { setInput(suggestion); handleChatSubmit(); }} className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">{suggestion}</button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="relative h-screen w-full font-sans selection:bg-primary/30 text-white overflow-hidden">
+      <Background />
+      <button onClick={toggleFullscreen} className="fixed top-4 right-4 z-[55] p-3 bg-black/40 hover:bg-white/10 backdrop-blur-md rounded-full text-white/50 hover:text-white transition-all border border-white/5 hover:border-white/20" title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}>{isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}</button>
+      
+      {!isIdle && !isUnlocking && !isSuccess && (
+        <button onClick={toggleMute} className="fixed top-4 left-4 z-[55] p-3 bg-black/40 hover:bg-white/10 backdrop-blur-md rounded-full text-white/50 hover:text-white transition-all border border-white/5 hover:border-white/20 flex items-center gap-2">
+          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}<span className="text-xs font-medium hidden md:block">{isMuted ? 'Bật nhạc' : 'Tắt nhạc'}</span>
+        </button>
+      )}
+
+      <main className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth pb-0">
+        {currentView === AppView.HOME && renderHome()}
+        {currentView === AppView.GALLERY && renderGallery()}
+        {currentView === AppView.SCHEDULE && renderSchedule()}
+        {currentView === AppView.AI_GUIDE && renderAIGuide()}
+        {currentView === AppView.ABOUT && renderAbout()}
+      </main>
+
+      {/* Popup Video Intro */}
+      {isAboutVideoFullscreen && (
+        <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center animate-in fade-in duration-300">
+          <button onClick={() => setIsAboutVideoFullscreen(false)} className="absolute top-6 right-6 z-[10000] p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all border border-white/20" title="Đóng"><Minimize size={24} /></button>
+          <video src="/intro.mp4" className="w-full h-full object-contain" controls autoPlay />
+        </div>
+      )}
+
+      {/* Popup Iframe Sản phẩm */}
+      {iframeUrl && (
+        <div className="fixed inset-0 z-[70] bg-black flex flex-col animate-in fade-in duration-300">
+          <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-white/10 shrink-0">
+            <h3 className="text-white font-medium truncate flex-1 pl-2">Trải nghiệm sản phẩm</h3>
+            <div className="flex items-center gap-2">
+              <a href={iframeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-lg transition-colors border border-primary/20"><ExternalLink size={14} /> Mở cửa sổ ngoài</a>
+              <button onClick={() => setIframeUrl(null)} className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"><X size={24} /></button>
+            </div>
+          </div>
+          
+          <div className="flex-1 w-full bg-slate-900 relative flex items-center justify-center overflow-hidden">
+            {isGoogleSite(iframeUrl) ? (
+              <div className="w-full h-full flex flex-col md:flex-row items-center justify-center gap-12 p-8 animate-in zoom-in duration-500 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
+                <div className="relative group">
+                    <div className="absolute -top-4 -left-4 w-12 h-12 border-t-4 border-l-4 border-primary rounded-tl-xl" />
+                    <div className="absolute -top-4 -right-4 w-12 h-12 border-t-4 border-r-4 border-primary rounded-tr-xl" />
+                    <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-4 border-l-4 border-primary rounded-bl-xl" />
+                    <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-primary rounded-br-xl" />
+
+                    <div className="bg-white p-4 rounded-xl shadow-[0_0_50px_rgba(14,165,233,0.3)] relative overflow-hidden">
+                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(iframeUrl)}`} alt="Scan QR" className="w-64 h-64 md:w-80 md:h-80 object-contain z-10 relative" />
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent shadow-[0_0_15px_rgba(239,68,68,1)] z-20 animate-[bounce_2s_infinite]" />
+                    </div>
+                    <div className="absolute -bottom-10 w-full text-center"><span className="text-primary font-mono text-xs tracking-[0.3em] animate-pulse">SCANNING...</span></div>
+                </div>
+                <div className="text-center md:text-left max-w-md space-y-6">
+                  <div className="flex items-center justify-center md:justify-start gap-3 text-primary mb-2"><div className="p-2 bg-primary/20 rounded-lg"><Scan size={32} /></div><span className="text-xl font-bold uppercase tracking-widest">Truy cập bảo mật</span></div>
+                  <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">Trải nghiệm sản phẩm trên <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Thiết bị di động</span></h3>
+                  <p className="text-white/60 text-lg leading-relaxed">Trang web này sử dụng công nghệ bảo mật cao của Google. Vui lòng quét mã để mở khóa nội dung đầy đủ trên điện thoại của bạn.</p>
+                  <div className="flex items-center justify-center md:justify-start gap-4 pt-2">
+                     <div className="flex items-center gap-2 text-sm text-white/40 bg-white/5 px-4 py-2 rounded-full border border-white/5"><Wifi size={16} /> <span>Yêu cầu kết nối mạng</span></div>
+                     <div className="flex items-center gap-2 text-sm text-white/40 bg-white/5 px-4 py-2 rounded-full border border-white/5"><Smartphone size={16} /> <span>Hỗ trợ iOS/Android</span></div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <iframe src={iframeUrl} className="w-full h-full border-0 bg-white" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+            )}
+          </div>
         </div>
       )}
 
@@ -442,7 +618,7 @@ const App: React.FC = () => {
                     ))}
                     
                     {/* Tên quà */}
-                    {Array.isArray(prizes) && prizes.map((prize, i) => (
+                    {prizes.map((prize, i) => (
                        <div 
                           key={i} 
                           className="absolute top-0 left-1/2 w-1 h-1/2 origin-bottom flex justify-center pt-4"
