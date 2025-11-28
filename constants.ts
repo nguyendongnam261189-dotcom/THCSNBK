@@ -98,7 +98,7 @@ export const PROJECTS: Project[] = [
         coverImage: "/06.png", // Smart garden
         imageUrl:  "/06.png", // Smart garden
         authors: 'Hoàng Thị Sương',
-        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/v%C6%B0%E1%BB%9Dn-th%C3%B4ng-minh'
+        demoUrl: 'https://thingsboard.cloud/dashboards/all'
     },
     {
         id: '7',
