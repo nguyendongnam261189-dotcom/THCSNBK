@@ -286,7 +286,7 @@ export const PROJECTS: Project[] = [
         coverImage: "/cover23.avif",
         imageUrl: "/cover23.avif", // Chemistry
         authors: 'Huỳnh Quốc Khánh',
-        demoUrl: 'https://sites.google.com/view/stemthcsnguyenbinhkhiem/periclick-b%E1%BA%A3ng-h%E1%BB%87-th%E1%BB%91ng-tu%E1%BA%A7n-ho%C3%A0n-t%C6%B0%C6%A1ng-t%C3%A1c'
+        demoUrl: 'https://khoahoctunhien.edu.vn/'
     },
     {
         id: '24',
